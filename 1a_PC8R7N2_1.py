@@ -132,7 +132,7 @@ print(len(tx))
 
 
 # Incorporate inhibition dynamics
-times = np.linspace(1e-5, 215)
+times = sorted( np.concatenate( ([48], np.linspace(1e-5, 215)) ) )
 
 # plot inhibited growth curves
 plt.figure()
@@ -143,8 +143,8 @@ for Ki in Kis:
     plt.plot(
         times,
         cX,
-        '--',
-        label='Ki = ' + str(Ki)
+        '-',
+        label='$K_i = $' + str(Ki)
         )
 
 # plot monod (no inhibited growth)
@@ -153,13 +153,17 @@ cX = g[:,0] # Biomass concentration
 plt.plot(
     times,
     cX,
-    '--',
-    label='No inhibition'
+    '-',
+    label='No Inhibition'
     )
 
+# Plot vertical line at 48 hours
+plt.axvline(x = 48, linestyle = '--', color = '0.8')
+
+# Finalise
 plt.xlabel('Time (hours)')
 plt.ylabel('Biomass Concentration (g/L)')
-plt.title('Biomass concentrations over time for various values of the inhibition constant and in the absence of inhibition')
+plt.title('Predicted biomass concentrations over time for various values of inhibition constant and in the absence of inhibition')
 plt.legend()
 
 plt.show()
