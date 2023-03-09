@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
+from inhibition import haldane, plot_inhibition_curves
 
 
 #tx = np.array([0, 12, 24, 30, 36, 48, 54, 60, 65, 69, 72, 78, 80, 84, 99.5, 105.5, 108, 121, 128.5, 132, 144])
@@ -53,18 +54,6 @@ def MONOD(f, t, umax, Ks, Yxs):
     S = f[1]
 
     u = umax*(S/(Ks+S))
-    ddt0 = u*X           # dXdt
-    ddt1 = -ddt0/Yxs    # dSdt     strictly growth associated growth, cell maintenance
-
-    ddt = [ddt0, ddt1]
-    return ddt
-
-
-def haldane(f, t, umax, Ks, Yxs, Ki):
-    X = f[0]
-    S = f[1]
-
-    u = umax*(S/(Ks+S+(S**2)/Ki))
     ddt0 = u*X           # dXdt
     ddt1 = -ddt0/Yxs    # dSdt     strictly growth associated growth, cell maintenance
 
@@ -133,37 +122,17 @@ print(len(tx))
 
 # Incorporate inhibition dynamics
 times = sorted( np.concatenate( ([48], np.linspace(1e-5, 215)) ) )
-
-# plot inhibited growth curves
-plt.figure()
 Kis = [1, 1.7, 3]
-for Ki in Kis:
-    g = odeint(haldane, b0, times, args=(umax, Ks, Yxs, Ki))
-    cX = g[:,0] # Biomass concentration
-    plt.plot(
-        times,
-        cX,
-        '-',
-        label='$K_i = $' + str(Ki)
-        )
+params = {
+    'inhibs': Kis,
+    'umax': umax,
+    'Ks': Ks,
+    'Yxs': Yxs,
+    'b0': b0
+}
 
-# plot monod (no inhibited growth)
-g = odeint(MONOD, b0, times, args=(umax, Ks, Yxs))
-cX = g[:,0] # Biomass concentration
-plt.plot(
+plot_inhibition_curves(
     times,
-    cX,
-    '-',
-    label='No Inhibition'
-    )
-
-# Plot vertical line at 48 hours
-plt.axvline(x = 48, linestyle = '--', color = '0.8')
-
-# Finalise
-plt.xlabel('Time (hours)')
-plt.ylabel('Biomass Concentration (g/L)')
-plt.title('Predicted biomass concentrations over time for various values of inhibition constant and in the absence of inhibition')
-plt.legend()
-
-plt.show()
+    params,
+    MONOD
+)
