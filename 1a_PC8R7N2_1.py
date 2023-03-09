@@ -45,7 +45,19 @@ def CONTOIS(f,t, umax, Ks, Yps, Yxs):
     return ddt
 
 
-def MONOD(f, t, umax, Ks, Yxs, Ki):
+def MONOD(f, t, umax, Ks, Yxs):
+    X = f[0]
+    S = f[1]
+
+    u = umax*(S/(Ks+S))
+    ddt0 = u*X           # dXdt
+    ddt1 = -ddt0/Yxs    # dSdt     strictly growth associated growth, cell maintenance
+
+    ddt = [ddt0, ddt1]
+    return ddt
+
+
+def haldane(f, t, umax, Ks, Yxs, Ki):
     X = f[0]
     S = f[1]
 
@@ -55,7 +67,6 @@ def MONOD(f, t, umax, Ks, Yxs, Ki):
 
     ddt = [ddt0, ddt1]
     return ddt
-
 
 
 def regress(params):
