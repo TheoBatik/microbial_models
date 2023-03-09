@@ -73,9 +73,8 @@ def regress(params):
     umax = params['umax'].value
     Ks = params['Ks'].value
     Yxs = params['Yxs'].value
-    Ki = params['Ki'].value
 
-    c = odeint(MONOD, b0,tx, args=(umax, Ks, Yxs, Ki))
+    c = odeint(MONOD, b0,tx, args=(umax, Ks, Yxs))
     cX = c[:, 0]
     I = (Xy - cX)**2
     # I = Py - cP
@@ -101,62 +100,63 @@ if(fit_data == 1):
     umax = result.params['umax'].value
     Ks = result.params['Ks'].value
     Yxs = result.params['Yxs'].value
-    Ki = result.params['Ki'].value
 
 
-g = odeint(MONOD,b0,t, args=(umax, Ks, Yxs, Ki))
+g = odeint(MONOD, b0,t, args=(umax, Ks, Yxs))
 cX = g[:,0]
 cS = g[:,1]
 print(len(tx))
 
-'''umax = result.params['umax'].value
-Ks = result.params['Ks'].value
-Yps = result.params['Yps'].value
-Yxs = result.params['Yxs'].value
 
-j = odeint(MONOD,b0,t, args=(umax, Ks, Yps, Yxs))
-cXM = j[:,0]
-cSM = j[:,1]
-cPM = j[:,2]'''
+# plt.figure()
+# plt.plot(t,cX,'--g')
+# #plt.plot(t,cXM,'--g')
+# plt.plot(tx, Xy, 'o')
+# plt.xlabel('Time (hours)')
+# plt.ylabel('Biomass Concentration (g/L)')
+# plt.legend(['Monod', 'Experimental'])
 
-"""plt.figure(1)
-plt.plot(t,cX,'r')
-plt.plot(t,cS,'b')
-#plt.plot(t,cP,'g')
-plt.xlabel('Time (days)')
-plt.ylabel('Concentration (g/L)')
-plt.legend(['X','S'])"""
 
+# plt.figure()
+# plt.plot(t,cS,'--g')
+# #plt.plot(t,cSM,'--g')
+# #plt.plot(tx, Sy, 'o')
+# plt.xlabel('Time (hours)')
+# plt.ylabel('Glycerol Concentration (g/L)')
+# #plt.legend(['Contois', 'Monod', 'Experimental'])
+
+# plt.show()
+
+
+# Incorporate inhibition dynamics
+times = np.linspace(1e-5, 215)
+
+# plot inhibited growth curves
 plt.figure()
-plt.plot(t,cX,'--g')
-#plt.plot(t,cXM,'--g')
-plt.plot(tx, Xy, 'o')
+Kis = [1, 1.7, 3]
+for Ki in Kis:
+    g = odeint(haldane, b0, times, args=(umax, Ks, Yxs, Ki))
+    cX = g[:,0] # Biomass concentration
+    plt.plot(
+        times,
+        cX,
+        '--',
+        label='Ki = ' + str(Ki)
+        )
+
+# plot monod (no inhibited growth)
+g = odeint(MONOD, b0, times, args=(umax, Ks, Yxs))
+cX = g[:,0] # Biomass concentration
+plt.plot(
+    times,
+    cX,
+    '--',
+    label='No inhibition'
+    )
+
 plt.xlabel('Time (hours)')
 plt.ylabel('Biomass Concentration (g/L)')
-plt.legend(['Monod', 'Experimental'])
-
-
-plt.figure()
-plt.plot(t,cS,'--g')
-#plt.plot(t,cSM,'--g')
-#plt.plot(tx, Sy, 'o')
-plt.xlabel('Time (hours)')
-plt.ylabel('Glycerol Concentration (g/L)')
-#plt.legend(['Contois', 'Monod', 'Experimental'])
-
-'''plt.figure(4)
-plt.plot(tx, Sy, 'o')
-#plt.plot(tx, Xy, 'o')
-plt.plot(tx, Py, 'o')
-plt.xlabel('Time (days)')
-plt.ylabel('Concentration (g/L)')
-plt.legend(['Substrate', 'Product'])'''
-
-'''plt.figure()
-plt.plot(tx, Xy, 'o')
-plt.xlabel('Time (days)')
-plt.ylabel('Concentration (g/L)')
-plt.legend(['Biomass'])'''
+plt.title('Biomass concentrations over time for various values of the inhibition constant and in the absence of inhibition')
+plt.legend()
 
 plt.show()
-
