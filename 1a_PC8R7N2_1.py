@@ -1,5 +1,8 @@
-'''' Was: 20210922 Znad Gluconic Acid Gluconic acid production by A. niger
-Greater yield'''
+'''' 
+Microbial growth model for PC8R7N2.1 
+including inhibition dynamics based on Haldane's equation
+(greater yield)
+'''
 
 import matplotlib.pyplot as plt
 import numpy as np

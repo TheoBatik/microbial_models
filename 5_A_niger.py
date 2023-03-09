@@ -1,4 +1,7 @@
-'''' Was: 20210922 Znad Gluconic Acid Gluconic acid production by A. niger'''
+'''' 
+Microbial growth model for A. Niger
+including inhibition dynamics based on Haldane's equation
+'''
 #PC8R7N2.1
 import matplotlib.pyplot as plt
 import numpy as np

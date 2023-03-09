@@ -1,7 +1,11 @@
 '''
-Experimental data from LNU
-Average of 3 sets taken for fitting value, plotted all 3 sets
-Was: 20220905 Caldus Nathan Data
+Microbial growth model for F. Caldus
+including inhibition dynamics based on Haldane's equation.
+
+
+Experimental data for initial fitting from LNU
+    Average of 3 sets taken for fitting value, plotted all 3 sets
+    Was: 20220905 Caldus Nathan Data
 
 At. c growth experiment. At. c in MAC media, pH2.0; 1% biologically derived S, 40 degress C, 120 RPM.
 Performed in triplicate with negative (cell-free) control. Cell counts are an average of 4 counts.
