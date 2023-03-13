@@ -114,7 +114,7 @@ from inhibition import plot_inhibition_curves, haldane
 
 xvline = 48
 times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 215)) ) )
-Kis = [1, 1.7, 2.2, 3]
+Kis = [2.2, 3, 5.3, 10]
 args = (umax, Ks, Yxs)
 
 g = odeint(MONOD, b0, times, args=args)
