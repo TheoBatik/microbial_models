@@ -195,49 +195,49 @@ cP = g[:,2]
 
 
 
-plt.figure()
-#plt.subplot(3,1,1)
-#plt.plot(Dt, D1biomass, 'o')
-#plt.plot(Dt, D2biomass, 'o')
-#plt.plot(Dt, D3biomass, 'o')
-#plt.plot(Dt, DbiomassAve, 'o')
-errorX = np.array([5.00E+09, 1.24E+11, 3.06E+11, 3.08E+12, 2.81E+12, 4.62E+12, 2.99E+12, 3.96E+12, 3.07E+12, 3.15E+12, 2.38E+12, 9.00E+11, 7.09E+11, 1.99E+12, 1.21E+12, 4.04E+11, 2.25E+12, 8.08E+11, 9.64E+11])/1e12
-plt.errorbar(Dt, DbiomassAve/1e12, yerr=errorX, fmt='.k', ecolor='black', capsize=3, label='Experimental')
-plt.plot(t, cX/1e12, '--g', label='Model')
-plt.xlabel('Time (h)')
-plt.ylabel('Biomass concentration ($x10^{12}$ cells/L)')
-plt.legend(frameon=False)
-# plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_Biomassconc.png', dpi=150, format='png')
-# plt.legend(['Sample 1', 'Sample 2', 'Sample 3', 'Average', 'Model'])
+# plt.figure()
+# #plt.subplot(3,1,1)
+# #plt.plot(Dt, D1biomass, 'o')
+# #plt.plot(Dt, D2biomass, 'o')
+# #plt.plot(Dt, D3biomass, 'o')
+# #plt.plot(Dt, DbiomassAve, 'o')
+# errorX = np.array([5.00E+09, 1.24E+11, 3.06E+11, 3.08E+12, 2.81E+12, 4.62E+12, 2.99E+12, 3.96E+12, 3.07E+12, 3.15E+12, 2.38E+12, 9.00E+11, 7.09E+11, 1.99E+12, 1.21E+12, 4.04E+11, 2.25E+12, 8.08E+11, 9.64E+11])/1e12
+# plt.errorbar(Dt, DbiomassAve/1e12, yerr=errorX, fmt='.k', ecolor='black', capsize=3, label='Experimental')
+# plt.plot(t, cX/1e12, '--g', label='Model')
+# plt.xlabel('Time (h)')
+# plt.ylabel('Biomass concentration ($x10^{12}$ cells/L)')
+# plt.legend(frameon=False)
+# # plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_Biomassconc.png', dpi=150, format='png')
+# # plt.legend(['Sample 1', 'Sample 2', 'Sample 3', 'Average', 'Model'])
 
-plt.figure()
-#plt.plot(Dt, DP1, 'o')
-#plt.plot(Dt, DP2, 'o')
-#plt.plot(Dt, DP3, 'o')
-plt.plot(Dt, DPAve, 'ok', label='Experimental')
-plt.plot(t, cP, '--g', label='Model')
-plt.legend(frameon=False)
-plt.xlabel('Time (h)')
-plt.ylabel('Sulfuric acid concentration (mol/L)')
-# plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfuricacidconc.png', dpi=150, format='png')
+# plt.figure()
+# #plt.plot(Dt, DP1, 'o')
+# #plt.plot(Dt, DP2, 'o')
+# #plt.plot(Dt, DP3, 'o')
+# plt.plot(Dt, DPAve, 'ok', label='Experimental')
+# plt.plot(t, cP, '--g', label='Model')
+# plt.legend(frameon=False)
+# plt.xlabel('Time (h)')
+# plt.ylabel('Sulfuric acid concentration (mol/L)')
+# # plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfuricacidconc.png', dpi=150, format='png')
 
-plt.figure()
-#plt.plot(Dt, DpHAve, 'o')
-plt.gray()
-errorpH = np.array([0.005773503, 0.028867513, 0.036055513, 0.045825757, 0.035118846, 0.055075705, 0.05033223, 0.011547005, 0.056862407, 0.035118846, 0.037859389, 0.045825757, 0.026457513, 0.030550505, 0.032145503, 0.02081666, 0.02081666, 0.01, 0.015275252])
-plt.errorbar(Dt, DpHAve, yerr=errorpH, fmt='.k', ecolor='black', capsize=3, label='Experimental') #, #fmt='o')
-cpH = sulfateconc_to_pH(cP)
-plt.plot(t, cpH, '--g', label='Model')
-plt.legend(frameon=False)
-plt.xlabel('Time (h)')
-plt.ylabel('pH')
-# plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_pHconc.png', dpi=150, format='png')
+# plt.figure()
+# #plt.plot(Dt, DpHAve, 'o')
+# plt.gray()
+# errorpH = np.array([0.005773503, 0.028867513, 0.036055513, 0.045825757, 0.035118846, 0.055075705, 0.05033223, 0.011547005, 0.056862407, 0.035118846, 0.037859389, 0.045825757, 0.026457513, 0.030550505, 0.032145503, 0.02081666, 0.02081666, 0.01, 0.015275252])
+# plt.errorbar(Dt, DpHAve, yerr=errorpH, fmt='.k', ecolor='black', capsize=3, label='Experimental') #, #fmt='o')
+# cpH = sulfateconc_to_pH(cP)
+# plt.plot(t, cpH, '--g', label='Model')
+# plt.legend(frameon=False)
+# plt.xlabel('Time (h)')
+# plt.ylabel('pH')
+# # plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_pHconc.png', dpi=150, format='png')
 
-plt.figure()
-plt.plot(t, cS, '--g', label='Model')
-plt.xlabel('Time (h)')
-plt.ylabel('Sulfur concentration (mol/L)')
-plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfurconc.png', dpi=150, format='png')
+# plt.figure()
+# plt.plot(t, cS, '--g', label='Model')
+# plt.xlabel('Time (h)')
+# plt.ylabel('Sulfur concentration (mol/L)')
+# plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfurconc.png', dpi=150, format='png')
 #plt.legend(['Sample 1', 'Sample 2', 'Sample 3', 'Average', 'Model'])
 
 c = odeint(MM, b0,Dt, args=(Vmax, Km, Yps, Yxs))
@@ -249,3 +249,35 @@ cP = c[:, 2]
 plt.show()
 
 
+##############################################################################
+
+# Plot inhibition curves
+
+from inhibition import plot_inhibition_curves, haldane_with_products
+
+xvline = 216
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 650)) ) )
+
+Kis = [0.0005, 0.001, 0.002] #np.logspace(-4, -2, 4) #(1, 200, 5) # [1, 1.7, 3]
+args = (Vmax, Km, Yps, Yxs)
+
+g = odeint(Monod, b0, times, args=args)
+zero_inhib = g[:,0] # Biomass concentration
+zero_inhib /= 10e12
+mic_name = 'F. Caldus'
+
+plot_inhibition_curves(
+    times,
+    b0,
+    Kis,
+    args,
+    zero_inhib,
+    haldane_with_products,
+    mic_name,
+    xvline
+)
+
+# remove ki=1 curve
+# Move vertical line to 216
+# Round the ki's
+# better spacing

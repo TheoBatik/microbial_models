@@ -93,22 +93,51 @@ cX = g[:,0]
 cS = g[:,1]
 print(len(tx))
 
-plt.figure()
-plt.plot(t,cX,'--b')
-#plt.plot(t,cXM,'--g')
-plt.plot(tx, Xy, 'o')
-plt.xlabel('Time (hours)')
-plt.ylabel('Biomass Concentration (g/L)')
-plt.legend(['Monod', 'Experimental'])
+# plt.figure()
+# plt.plot(t,cX,'--b')
+# #plt.plot(t,cXM,'--g')
+# plt.plot(tx, Xy, 'o')
+# plt.xlabel('Time (hours)')
+# plt.ylabel('Biomass Concentration (g/L)')
+# plt.legend(['Monod', 'Experimental'])
 
 
-plt.figure()
-plt.plot(t,cS,'--b')
-#plt.plot(t,cSM,'--g')
-#plt.plot(tx, Sy, 'o')
-plt.xlabel('Time (hours)')
-plt.ylabel('Glycerol Concentration (g/L)')
-#plt.legend(['Contois', 'Monod', 'Experimental'])
+# plt.figure()
+# plt.plot(t,cS,'--b')
+# #plt.plot(t,cSM,'--g')
+# #plt.plot(tx, Sy, 'o')
+# plt.xlabel('Time (hours)')
+# plt.ylabel('Glycerol Concentration (g/L)')
+# #plt.legend(['Contois', 'Monod', 'Experimental'])
 
-plt.show()
+# plt.show()
+
+
+
+# Plot inhibition curves
+
+from inhibition import plot_inhibition_curves, haldane
+
+xvline = 48
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 215, 400)) ) )
+# add more points
+
+Kis = [1, 1.7, 3, 3.5]
+args = (umax, Ks, Yxs)
+
+g = odeint(MONOD, b0, times, args=args)
+zero_inhib = g[:,0] # Biomass concentration
+mic_name = 'FBOC10N2.7'
+
+plot_inhibition_curves(
+    times,
+    b0,
+    Kis,
+    args,
+    zero_inhib,
+    haldane,
+    mic_name,
+    xvline
+)
+
 

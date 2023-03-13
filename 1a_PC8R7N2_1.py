@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
-from inhibition import haldane, plot_inhibition_curves
 
 
 #tx = np.array([0, 12, 24, 30, 36, 48, 54, 60, 65, 69, 72, 78, 80, 84, 99.5, 105.5, 108, 121, 128.5, 132, 144])
@@ -119,20 +118,33 @@ print(len(tx))
 
 # plt.show()
 
+#######################################################################################
 
-# Incorporate inhibition dynamics
-times = sorted( np.concatenate( ([48], np.linspace(1e-5, 215)) ) )
-Kis = [1, 1.7, 3]
-params = {
-    'inhibs': Kis,
-    'umax': umax,
-    'Ks': Ks,
-    'Yxs': Yxs,
-    'b0': b0
-}
+# Plot inhibition curves
+
+from inhibition import plot_inhibition_curves, haldane
+
+xvline = 48
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 215)) ) )
+Kis = [1, 1.7, 2.2, 3]
+args = (umax, Ks, Yxs)
+
+g = odeint(MONOD, b0, times, args=args)
+zero_inhib = g[:,0] # Biomass concentration
+mic_name = 'PC8R7N2.1'
 
 plot_inhibition_curves(
     times,
-    params,
-    MONOD
+    b0,
+    Kis,
+    args,
+    zero_inhib,
+    haldane,
+    mic_name,
+    xvline
 )
+
+
+
+# Plot on all variables 
+# Params 

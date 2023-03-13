@@ -95,54 +95,78 @@ cX = g[:,0]
 cS = g[:,1]
 print(len(tx))
 
-'''umax = result.params['umax'].value
-Ks = result.params['Ks'].value
-Yps = result.params['Yps'].value
-Yxs = result.params['Yxs'].value
+# '''umax = result.params['umax'].value
+# Ks = result.params['Ks'].value
+# Yps = result.params['Yps'].value
+# Yxs = result.params['Yxs'].value
 
-j = odeint(MONOD,b0,t, args=(umax, Ks, Yps, Yxs))
-cXM = j[:,0]
-cSM = j[:,1]
-cPM = j[:,2]'''
+# j = odeint(MONOD,b0,t, args=(umax, Ks, Yps, Yxs))
+# cXM = j[:,0]
+# cSM = j[:,1]
+# cPM = j[:,2]'''
 
-"""plt.figure(1)
-plt.plot(t,cX,'r')
-plt.plot(t,cS,'b')
-#plt.plot(t,cP,'g')
-plt.xlabel('Time (days)')
-plt.ylabel('Concentration (g/L)')
-plt.legend(['X','S'])"""
+# """plt.figure(1)
+# plt.plot(t,cX,'r')
+# plt.plot(t,cS,'b')
+# #plt.plot(t,cP,'g')
+# plt.xlabel('Time (days)')
+# plt.ylabel('Concentration (g/L)')
+# plt.legend(['X','S'])"""
 
-plt.figure()
-plt.plot(t,cX,'--g')
-#plt.plot(t,cXM,'--g')
-plt.plot(tx, Xy, 'o')
-plt.xlabel('Time (days)')
-plt.ylabel('Biomass Concentration (g/L)')
-plt.legend(['Monod', 'Experimental'])
+# plt.figure()
+# plt.plot(t,cX,'--g')
+# #plt.plot(t,cXM,'--g')
+# plt.plot(tx, Xy, 'o')
+# plt.xlabel('Time (days)')
+# plt.ylabel('Biomass Concentration (g/L)')
+# plt.legend(['Monod', 'Experimental'])
 
 
-plt.figure()
-plt.plot(t,cS,'--g')
-#plt.plot(t,cSM,'--g')
-#plt.plot(tx, Sy, 'o')
-plt.xlabel('Time (days)')
-plt.ylabel('Glycerol Concentration (g/L)')
-#plt.legend(['Contois', 'Monod', 'Experimental'])
+# plt.figure()
+# plt.plot(t,cS,'--g')
+# #plt.plot(t,cSM,'--g')
+# #plt.plot(tx, Sy, 'o')
+# plt.xlabel('Time (days)')
+# plt.ylabel('Glycerol Concentration (g/L)')
+# #plt.legend(['Contois', 'Monod', 'Experimental'])
 
-'''plt.figure(4)
-plt.plot(tx, Sy, 'o')
-#plt.plot(tx, Xy, 'o')
-plt.plot(tx, Py, 'o')
-plt.xlabel('Time (days)')
-plt.ylabel('Concentration (g/L)')
-plt.legend(['Substrate', 'Product'])'''
+# '''plt.figure(4)
+# plt.plot(tx, Sy, 'o')
+# #plt.plot(tx, Xy, 'o')
+# plt.plot(tx, Py, 'o')
+# plt.xlabel('Time (days)')
+# plt.ylabel('Concentration (g/L)')
+# plt.legend(['Substrate', 'Product'])'''
 
-'''plt.figure()
-plt.plot(tx, Xy, 'o')
-plt.xlabel('Time (days)')
-plt.ylabel('Concentration (g/L)')
-plt.legend(['Biomass'])'''
+# '''plt.figure()
+# plt.plot(tx, Xy, 'o')
+# plt.xlabel('Time (days)')
+# plt.ylabel('Concentration (g/L)')
+# plt.legend(['Biomass'])'''
 
-plt.show()
+# plt.show()
 
+
+# Plot inhibition curves
+
+from inhibition import plot_inhibition_curves, haldane
+
+xvline = 48
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 215)) ) )
+Kis = [1, 1.7, 3]
+args = (umax, Ks, Yxs)
+
+g = odeint(MONOD, b0, times, args=args)
+zero_inhib = g[:,0] # Biomass concentration
+mic_name = 'PC8R7N2.1 (lower yield)'
+
+plot_inhibition_curves(
+    times,
+    b0,
+    Kis,
+    args,
+    zero_inhib,
+    haldane,
+    mic_name,
+    xvline
+)
