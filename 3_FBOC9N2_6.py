@@ -7,6 +7,8 @@ import numpy as np
 from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
 
+mic_name = 'FBOC9N2.6'
+print( '\n'*2, 'Summary of params used for species ', mic_name)
 
 tx = np.array([0, 2, 5, 7, 8, 10, 12, 24, 29, 34, 48, 53, 58])
 Xy = np.array([0.55, 0.56, 0.74, 0.99, 1.00, 1.53, 1.88, 3.41, 6.68, 7.88, 16.22, 16.95, 17.32])
@@ -110,16 +112,16 @@ print(len(tx))
 # Plot inhibition curves
 
 from inhibition import plot_inhibition_curves, haldane
+from control import show_fig
 
 
 xvline = 48
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 215)) ) )
-Kis = [2.2, 3, 5.3, 10]
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 150)) ) )
+Kis = [2, 3, 5, 10]
 args = (umax, Ks, Yxs)
 
 g = odeint(MONOD, b0, times, args=args)
 zero_inhib = g[:,0] # Biomass concentration
-mic_name = 'FBOC9N2.6'
 
 plot_inhibition_curves(
     times,
@@ -129,6 +131,7 @@ plot_inhibition_curves(
     zero_inhib,
     haldane,
     mic_name,
-    xvline
+    xvline,
+    show_fig=show_fig
 )
 

@@ -24,6 +24,9 @@ from scipy.integrate import odeint, simps
 from lmfit import Parameters, minimize, fit_report
 import pandas as pd
 
+mic_name = 'F. Caldus'
+print( '\n'*2, 'Summary of params used for species ', mic_name)
+
 df = pd.read_excel(r'CaldusReadInData.xlsx', sheet_name='CaldusExperiment')
 alldata = np.array(df)
 
@@ -254,6 +257,7 @@ plt.show()
 # Plot inhibition curves
 
 from inhibition import plot_inhibition_curves, haldane_with_products
+from control import show_fig
 
 xvline = 216
 times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 650)) ) )
@@ -264,7 +268,6 @@ args = (Vmax, Km, Yps, Yxs)
 g = odeint(Monod, b0, times, args=args)
 zero_inhib = g[:,0] # Biomass concentration
 zero_inhib /= 10e12
-mic_name = 'F. Caldus'
 
 plot_inhibition_curves(
     times,
@@ -274,7 +277,8 @@ plot_inhibition_curves(
     zero_inhib,
     haldane_with_products,
     mic_name,
-    xvline
+    xvline,
+    show_fig=show_fig
 )
 
 # remove ki=1 curve

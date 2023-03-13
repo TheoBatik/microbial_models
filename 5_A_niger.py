@@ -8,6 +8,9 @@ import numpy as np
 from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
 
+mic_name = 'A. niger'
+print( '\n'*2, 'Summary of params used for species ', mic_name)
+
 X0 = 0.88 #0.04 #g/L
 S0 = 10 #g/L # check glycerol
 P0 = 0 #g/
@@ -115,16 +118,16 @@ print(len(tx))
 # Plot inhibition curves
 
 from inhibition import plot_inhibition_curves, haldane
-
+from control import show_fig
 
 xvline = 48
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 600)) ) )
-Kis = [1, 1.7, 3]
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 500)) ) )
+Kis = [2, 3, 5, 10]
 args = (umax, Ks, Yxs)
 
 g = odeint(MONOD, b0, times, args=args)
 zero_inhib = g[:,0] # Biomass concentration
-mic_name = 'A. niger'
+
 plot_inhibition_curves(
     times,
     b0,
@@ -132,5 +135,7 @@ plot_inhibition_curves(
     args,
     zero_inhib,
     haldane,
-    mic_name
+    mic_name,
+    xvline,
+    show_fig=show_fig
 )
