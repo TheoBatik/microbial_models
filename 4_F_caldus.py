@@ -27,7 +27,7 @@ import pandas as pd
 mic_name = 'F. Caldus'
 print( '\n'*2, 'Summary of params used for species ', mic_name)
 
-df = pd.read_excel(r'CaldusReadInData.xlsx', sheet_name='CaldusExperiment')
+df = pd.read_excel(r'data/CaldusReadInData.xlsx', sheet_name='CaldusExperiment')
 alldata = np.array(df)
 
 num_elements = len(alldata)-1
