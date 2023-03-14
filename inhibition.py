@@ -53,7 +53,10 @@ def plot_inhibition_curves(
     mic_name, # name of micro-organism
     xvline,
     save_fig=True,
-    show_fig=True
+    show_fig=True,
+    cells=0, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
+    measured_data=None,
+    measured_times=None
     ):
 
 
@@ -68,9 +71,8 @@ def plot_inhibition_curves(
         cX = g[:,0] # Biomass concentration
         label='$K_i = $' + str(ki)
 
-        if inhib_func == haldane_with_products:
-            cX /= 10e12
-            ylabel = 'Biomass Concentration ($10^{12}$ cells/L)'
+        if cells:
+            ylabel = f'Biomass Concentration ($10^{cells}$ cells/L)'
 
         plt.plot(
             eval_times,
@@ -87,6 +89,16 @@ def plot_inhibition_curves(
         label='No Inhibition'
         )
 
+    # Plot measured data
+    if measured_data is not None:
+
+        plt.plot(
+            measured_times,
+            measured_data, 
+            'o',
+            label='Measured'
+        )
+        
     # Plot vertical line at 48 hours
     plt.axvline(x = xvline, linestyle = '--', color = '0.8')
 

@@ -24,36 +24,41 @@ from control import show_fig
 
 # Load measure data
 measured_data, header = load_csv( 'p_brassicacearum_wits_dataset_3')
+print('\nRaw measured data')
+print(measured_data)
 
 # Extract states
 states_m = measured_data[:, 1:3] # states measured
 state_names = header[1:3]
-print(state_names, states_m)
+print('\nRaw extracted states')
+print(state_names, '\n', states_m)
 
 # Convert optimal density to biomass concentration (g/L) and mg to g/L
-conversion_factor_OD = 0.4
+conversion_factor_OD = 0.24
 states_m[:, 0] = states_m[:, 0] * conversion_factor_OD
 states_m[:, 1] = states_m[:, 1] / 1000
 state_names[0] = 'Biomass Concentration (g/L)'
 state_names[1] = 'Cyanide Concentration (g/L)'
 
 # Extract times at which to evalutate the solution of the ODE system
-eval_times =  measured_data[:, 0]
-print(header[0], eval_times)
+times_m =  measured_data[:, 0]
+print('\nMeasurement times')
+print(header[0], times_m)
 
 # Set initial states
 innoculum_size_0 = 1.3e8
-conversion_factor_IS = 4 * 10e-13 # grams/cell
-cX_0 = innoculum_size_0 * conversion_factor_IS
+conversion_factor_IS =  10e-10 # 10e-8 # grams/cell
+cX_0 =  innoculum_size_0 * conversion_factor_IS
 states_m[0, 0] = cX_0
-print(state_names, states_m)
-initial_states = [ cX_0, 15, states_m[0, 1] ] # 15g/L substrate in Luria broth
-print('initial_states', initial_states)
+print('\nProcessed measured states')
+print(state_names, '\n', states_m)
+print('\nInitial measured states')
+initial_states = [ cX_0, 20, states_m[0, 1] ] # 20g/L substrate in Luria broth + 5 g glycine
+print(initial_states)
 
 #######################################################################################
 
 # Build model and define regression function
-
 
 # Define model for parameter fitting 
 def monod(f,t, umax, Ks, Yps, Yxs):
@@ -93,7 +98,7 @@ def regress( params ):
     Yxs = params['Yxs'].value
 
     # Model prediction
-    c = odeint(monod, initial_states, eval_times, args=(umax, Ks, Yps, Yxs))
+    c = odeint(monod, initial_states, times_m, args=(umax, Ks, Yps, Yxs))
     cX = c[:, 0]
     # cS = c[:, 1]
     cP = c[:, 2]
@@ -126,15 +131,15 @@ Yps = result.params['Yps'].value
 # Plot inhibition curves
 
 xvline = 24
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 180)) ) )
+times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 150, 400)) ) )
 Kis = [2, 3, 5, 10]
 args = (umax, Ks, Yps, Yxs)
 
-c_monod = odeint(monod, initial_states, eval_times, args=args)
+c_monod = odeint(monod, initial_states, times_p, args=args)
 zero_inhib = c_monod[:,0] # Biomass concentration
 
 plot_inhibition_curves(
-    eval_times,
+    times_p,
     initial_states,
     Kis,
     args,
@@ -142,5 +147,36 @@ plot_inhibition_curves(
     haldane_with_products,
     mic_name,
     xvline,
-    show_fig=show_fig
+    show_fig=show_fig,
+    measured_data=states_m[:,0],
+    measured_times=times_m
 )
+
+
+# Ad-hoc 
+
+times = np.linspace(times_m[0], times_m[-1], 400)
+
+c_monod = odeint(monod, initial_states, times, args=args)
+zero_inhib = c_monod[:,0] # Biomass concentration
+plt.figure()
+plt.plot(
+    times_m,
+    states_m[:,0], 
+    'o',
+    label='Measured',
+    ms=5
+)
+plt.plot(
+    times,
+    zero_inhib, 
+    '-',
+    label='Predicted',
+    # linewidth=1
+)
+plt.xlabel('Time (hours)')
+plt.ylabel( 'Biomass Concentration (g/L)' )
+title = 'Biomass concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
+plt.title( title, loc='center', wrap=True )
+plt.legend()
+plt.show()
