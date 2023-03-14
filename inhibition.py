@@ -1,7 +1,20 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
+import os
 
+def load_csv( csv_name='measured_data' ):
+    matrix = []
+    with open( os.path.join('data', f'{csv_name}.csv'), 'r', encoding='utf-8-sig') as file:
+        for i, line in enumerate(file):
+            if i == 0:
+                header = list( line.strip().split(',') )
+                continue
+            row = [float(item) for item in line.strip().split(',')]
+            matrix.append(row)
+    matrix = np.asarray( matrix )
+    matrix.astype( np.float32 )
+    return matrix, header
 
 
 def haldane(f, t, umax, Ks, Yxs, ki):
