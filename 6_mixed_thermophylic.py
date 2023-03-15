@@ -33,8 +33,8 @@ state_names = header[1]
 print('\nRaw extracted states')
 print(state_names, '\n', states_m)
 
-# Convert biomass concentration (cells/ml) to (cells/L)
-states_m = states_m / 1000
+# Convert biomass concentration (10^8 cells/ml) to (cells/L)
+states_m = states_m * 1e8 / 1e3
 state_names = 'Biomass Concentration (cells/L)'
 print('\nProcessed measured states')
 print(state_names, '\n', states_m)
@@ -71,8 +71,8 @@ def monod(f,t, umax, Ks, Yps, Yxs):
 
 # Set model params
 umax = 0.18 #/h
-Ks = 18.35 # #g/L
-Yxs = 2 
+Ks = 18.35 #g/L
+Yxs = 2
 Yps = 0.5445
 
 params = Parameters()
@@ -124,13 +124,14 @@ Yps = result.params['Yps'].value
 # Plot inhibition curves
 
 xvline = 24
-times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 285, 400)) ) )
-Kis = np.asarray([2, 3, 5, 10, ]) * 1 / 10000
+times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 550, 500)) ) )
+Kis = np.asarray([2, 3, 5, 10, ]) * 1 / 100000
 args = (umax, Ks, Yps, Yxs)
 
 c_monod = odeint(monod, initial_states, times_p, args=args)
 cX_no_inhib = c_monod[:,0]  # Biomass concentration
 cS_no_inhib = c_monod[:,1] # Substrate concentration
+cP_no_inhib = c_monod[:,2] # Substrate concentration
 
 plot_inhibition_curves(
     times_p,
@@ -141,11 +142,13 @@ plot_inhibition_curves(
     mic_name,
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
     xvline=xvline,
     show_fig=show_fig,
-    cX_measured=states_m[:,0],
+    cX_measured=states_m,
     # cS_measured=[:,1],
     measurement_times=times_m,
-    cells=True,
-    scale_cX=None#1e8
+    # cells=True,
+    # scale_cX=None#1e8
+    cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
 )

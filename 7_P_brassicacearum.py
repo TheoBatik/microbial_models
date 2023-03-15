@@ -138,6 +138,7 @@ args = (umax, Ks, Yps, Yxs)
 c_monod = odeint(monod, initial_states, times_p, args=args)
 cX_no_inhib = c_monod[:,0]  # Biomass concentration
 cS_no_inhib = c_monod[:,1] # Substrate concentration
+cP_no_inhib = c_monod[:,2] # Substrate concentration
 
 plot_inhibition_curves(
     times_p,
@@ -148,40 +149,69 @@ plot_inhibition_curves(
     mic_name,
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
     xvline=xvline,
     show_fig=show_fig,
     cX_measured=states_m[:,0],
-    # cP_measured=states_m[:,1],
+    cP_measured=states_m[:,1],
     measurement_times=times_m,
-    cells=True,
-    scale_cX=None#1e8
+    # cells=True,
+    # scale_cX=None#1e8
+    cX_label_y='Biomass Concentration (cells/L)'
 )
 
 
+#######################################################################################
+
 # Ad-hoc 
 
-# times = np.linspace(times_m[0], times_m[-1], 400)
+times = np.linspace(times_m[0], 85, 400) # times_m[-1]
 
-# c_monod = odeint(monod, initial_states, times, args=args)
-# zero_inhib = c_monod[:,0] # Biomass concentration
-# plt.figure()
-# plt.plot(
-#     times_m,
-#     states_m[:,0], 
-#     'o',
-#     label='Measured',
-#     ms=5
-# )
-# plt.plot(
-#     times,
-#     zero_inhib, 
-#     '-',
-#     label='Predicted',
-#     # linewidth=1
-# )
-# plt.xlabel('Time (hours)')
-# plt.ylabel( 'Biomass Concentration (g/L)' )
-# title = 'Biomass concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
-# plt.title( title, loc='center', wrap=True )
-# plt.legend()
-# plt.show()
+c_monod = odeint(monod, initial_states, times, args=args)
+zero_inhib = c_monod[:,0] # Biomass concentration
+plt.figure()
+plt.plot(
+    times_m,
+    states_m[:,0], 
+    'o',
+    label='Measured',
+    ms=5
+)
+plt.plot(
+    times,
+    zero_inhib, 
+    '-',
+    label='Predicted',
+    # linewidth=1
+)
+plt.xlabel('Time (hours)')
+plt.ylabel( 'Biomass Concentration (g/L)' )
+title = 'Biomass concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
+plt.title( title, loc='center', wrap=True )
+plt.legend()
+plt.show()
+
+
+c_monod = odeint(monod, initial_states, times, args=args)
+zero_inhib = c_monod[:,2] # Product concentration
+plt.figure()
+plt.plot(
+    times_m,
+    states_m[:,1], 
+    'o',
+    label='Measured',
+    ms=5
+)
+plt.plot(
+    times,
+    zero_inhib, 
+    '-',
+    label='Predicted',
+    # linewidth=1
+)
+plt.xlabel('Time (hours)')
+plt.ylabel( 'Product Concentration (g/L)' )
+title = 'Product concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
+plt.title( title, loc='center', wrap=True )
+plt.legend()
+plt.show()

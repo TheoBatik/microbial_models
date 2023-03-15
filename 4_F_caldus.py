@@ -88,7 +88,7 @@ Yxs = 5.5e13 # cells/mol
 params = Parameters()
 params.add('Km', value=Km, max=500, vary=True)
 params.add('Vmax', value=Vmax, max=15, vary=True)
-params.add('Yps', value=Yps, min=0.01, max=5, vary=True)
+params.add('Yps', value=Yps, min=0.01, max=1, vary=True) # max=5,
 params.add('Yxs', value=Yxs, min=0, vary=False)
 
 def MM(f,t, Vmax, Km, Yps, Yxs):
@@ -267,6 +267,7 @@ args = (Vmax, Km, Yps, Yxs)
 g = odeint(Monod, b0, times, args=args)
 cX_no_inhib = g[:,0] # Biomass concentration
 cS_no_inhib = g[:,1] # Substrate concentration
+cP_no_inhib = g[:,2] # Product concentration
 
 plot_inhibition_curves(
     times,
@@ -277,11 +278,14 @@ plot_inhibition_curves(
     mic_name,
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
     xvline=xvline,
     show_fig=show_fig,
     cX_measured=DbiomassAve,
-    cells=True,
+    cP_measured=DPAve,
+    # cells=True,
     # cS_measured=Sy,
-    measurement_times=Dt
+    measurement_times=Dt,
+    cX_label_y='Biomass Concentration (cells/L)'
 )
 # Round the ki's => scientific nt

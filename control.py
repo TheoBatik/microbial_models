@@ -1,1 +1,1 @@
-show_fig = True
+show_fig = False
