@@ -54,7 +54,7 @@ def plot_inhibition_curves(
     xvline,
     save_fig=True,
     show_fig=True,
-    cells=0, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
+    cells=True, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
     measured_data=None,
     measured_times=None
     ):
@@ -62,7 +62,6 @@ def plot_inhibition_curves(
 
     # Create figure
     plt.figure()
-    ylabel = 'Biomass Concentration (g/L)'
 
     # Plot inhibited growth curves (for each item in kis)
     for ki in inhibs:
@@ -71,14 +70,6 @@ def plot_inhibition_curves(
         cX = g[:,0] # Biomass concentration
         label='$K_i = $' + str(ki)
 
-        if cells:
-            scale = 10**(cells) 
-            # cX /= scale
-            # zero_inhib /= scale
-            ylabel = f'Biomass Concentration ($10^{cells}$ cells/L)'
-            # if measured_data is not None:
-            #     measured_data /= scale
-
         plt.plot(
             eval_times,
             cX,
@@ -86,6 +77,23 @@ def plot_inhibition_curves(
             label='$K_i = $' + str(round( ki, 5 ) )
             )
 
+    if cells:
+        ylabel = 'Biomass Concentration (cells/L)'
+    else:
+        ylabel = 'Biomass Concentration (g/L)'
+
+            # scale = 10**(cells) 
+            # cX /= scale
+            # zero_inhib /= scale
+            # cells_s = str(cells)
+            # if len(cells_s) > 1:
+            #     ylabel = f'Biomass Concentration ($10^{cells_s[0]}$' + f'$^{cells_s[1]}$ cells/L)'
+            # else:
+            #     ylabel = f'Biomass Concentration ($10^{cells_s}$ cells/L)'
+
+            # if measured_data is not None:
+            #     measured_data /= scale
+    
     # Plot curve for ZERO inhibition (pure Monod dynamics)
     plt.plot(
         eval_times,

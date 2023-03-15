@@ -68,7 +68,6 @@ DP3 = pH_to_AcidConc(D3pH)
 DPAve = pH_to_AcidConc(DpHAve)
 
 
-
 # Initial Conditions
 Vr = 0.250        # L
 S0mass = 10*0.6
@@ -128,12 +127,12 @@ def regress(params):
     #c = odeint(MM, b0,Dt, args=(Vmax, Km, Yps, Yxs))
     c = odeint(Monod, b0, Dt, args=(Vmax, Km, Yps, Yxs))
     cX = c[:, 0]
-    cS = c[:, 1]
+    # cS = c[:, 1]
     cP = c[:, 2]
 
-    I = (DPAve - cP)**2
+    # weight = [1, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 20, 20, 8, 8, 8, 3, 3, 3, 3, 3, 3]
+    I = ((DbiomassAve - cX))**2 + ((DPAve - cP))**2 # ((DbiomassAve - cX)*weight)**2 + ((DPAve - cP)*weight)**2 
     #I = (DbiomassAve - cX) **2
-    #weight = [1, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 20, 20, 8, 8, 8, 3, 3, 3, 3, 3, 3]
     #I = ((DPAve - cP) * weight) ** 2
 
 
@@ -199,11 +198,11 @@ cP = g[:,2]
 
 
 # plt.figure()
-# #plt.subplot(3,1,1)
-# #plt.plot(Dt, D1biomass, 'o')
-# #plt.plot(Dt, D2biomass, 'o')
-# #plt.plot(Dt, D3biomass, 'o')
-# #plt.plot(Dt, DbiomassAve, 'o')
+# plt.subplot(3,1,1)
+# plt.plot(Dt, D1biomass, 'o')
+# plt.plot(Dt, D2biomass, 'o')
+# plt.plot(Dt, D3biomass, 'o')
+# plt.plot(Dt, DbiomassAve, 'o')
 # errorX = np.array([5.00E+09, 1.24E+11, 3.06E+11, 3.08E+12, 2.81E+12, 4.62E+12, 2.99E+12, 3.96E+12, 3.07E+12, 3.15E+12, 2.38E+12, 9.00E+11, 7.09E+11, 1.99E+12, 1.21E+12, 4.04E+11, 2.25E+12, 8.08E+11, 9.64E+11])/1e12
 # plt.errorbar(Dt, DbiomassAve/1e12, yerr=errorX, fmt='.k', ecolor='black', capsize=3, label='Experimental')
 # plt.plot(t, cX/1e12, '--g', label='Model')
@@ -225,7 +224,7 @@ cP = g[:,2]
 # # plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfuricacidconc.png', dpi=150, format='png')
 
 # plt.figure()
-# #plt.plot(Dt, DpHAve, 'o')
+# plt.plot(Dt, DpHAve, 'o')
 # plt.gray()
 # errorpH = np.array([0.005773503, 0.028867513, 0.036055513, 0.045825757, 0.035118846, 0.055075705, 0.05033223, 0.011547005, 0.056862407, 0.035118846, 0.037859389, 0.045825757, 0.026457513, 0.030550505, 0.032145503, 0.02081666, 0.02081666, 0.01, 0.015275252])
 # plt.errorbar(Dt, DpHAve, yerr=errorpH, fmt='.k', ecolor='black', capsize=3, label='Experimental') #, #fmt='o')
@@ -240,16 +239,16 @@ cP = g[:,2]
 # plt.plot(t, cS, '--g', label='Model')
 # plt.xlabel('Time (h)')
 # plt.ylabel('Sulfur concentration (mol/L)')
-# plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfurconc.png', dpi=150, format='png')
-#plt.legend(['Sample 1', 'Sample 2', 'Sample 3', 'Average', 'Model'])
+# # plt.savefig(r'C:\Users\ylrae\OneDrive\Pictures\Results\MonodX1_sulfurconc.png', dpi=150, format='png')
+# plt.legend(['Sample 1', 'Sample 2', 'Sample 3', 'Average', 'Model'])
 
-c = odeint(MM, b0,Dt, args=(Vmax, Km, Yps, Yxs))
-#c = odeint(Monod, b0, Dt , args=(Vmax, Km, Yps, Yxs))
-cX = c[:, 0]
-cS = c[:, 1]
-cP = c[:, 2]
+# c = odeint(MM, b0,Dt, args=(Vmax, Km, Yps, Yxs))
+# #c = odeint(Monod, b0, Dt , args=(Vmax, Km, Yps, Yxs))
+# cX = c[:, 0]
+# cS = c[:, 1]
+# cP = c[:, 2]
 
-plt.show()
+# plt.show()
 
 
 ##############################################################################
@@ -260,7 +259,7 @@ from inhibition import plot_inhibition_curves, haldane_with_products
 from control import show_fig
 
 xvline = 216
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 650)) ) )
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, Dt[-1])) ) )
 
 Kis = [0.0005, 0.001, 0.002] #np.logspace(-4, -2, 4) #(1, 200, 5) # [1, 1.7, 3]
 args = (Vmax, Km, Yps, Yxs)
@@ -279,7 +278,10 @@ plot_inhibition_curves(
     mic_name,
     xvline,
     show_fig=show_fig,
-    cells=12
+    # cells=12,
+    cells=True,
+    measured_data=DbiomassAve,
+    measured_times=Dt
 )
 
 # remove ki=1 curve

@@ -132,6 +132,8 @@ plot_inhibition_curves(
     haldane,
     mic_name,
     xvline,
-    show_fig=show_fig
+    show_fig=show_fig,
+    measured_data=Xy,
+    measured_times=tx
 )
 

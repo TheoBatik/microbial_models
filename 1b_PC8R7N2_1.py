@@ -155,7 +155,7 @@ from inhibition import plot_inhibition_curves, haldane
 from control import show_fig
 
 xvline = 48
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 150)) ) )
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 130)) ) )
 Kis = [2, 3, 5, 10]
 args = (umax, Ks, Yxs)
 
@@ -171,5 +171,7 @@ plot_inhibition_curves(
     haldane,
     mic_name,
     xvline,
-    show_fig=show_fig
+    show_fig=show_fig,
+    measured_data=Xy,
+    measured_times=tx
 )
