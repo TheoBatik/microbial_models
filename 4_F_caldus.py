@@ -267,7 +267,7 @@ args = (Vmax, Km, Yps, Yxs)
 
 g = odeint(Monod, b0, times, args=args)
 zero_inhib = g[:,0] # Biomass concentration
-zero_inhib /= 10e12
+# zero_inhib /= 10e12
 
 plot_inhibition_curves(
     times,
@@ -278,10 +278,11 @@ plot_inhibition_curves(
     haldane_with_products,
     mic_name,
     xvline,
-    show_fig=show_fig
+    show_fig=show_fig,
+    cells=12
 )
 
 # remove ki=1 curve
 # Move vertical line to 216
-# Round the ki's
+# Round the ki's => scientific nt
 # better spacing

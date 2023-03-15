@@ -35,7 +35,7 @@ print(state_names, '\n', states_m)
 
 # Convert biomass concentration (cells/ml) to (cells/L)
 states_m = states_m / 1000
-state_names = 'Biomass Concentration (cells/ml)'
+state_names = 'Biomass Concentration (cells/L)'
 print('\nProcessed measured states')
 print(state_names, '\n', states_m)
 

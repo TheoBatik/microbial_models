@@ -72,13 +72,18 @@ def plot_inhibition_curves(
         label='$K_i = $' + str(ki)
 
         if cells:
+            scale = 10**(cells) 
+            # cX /= scale
+            # zero_inhib /= scale
             ylabel = f'Biomass Concentration ($10^{cells}$ cells/L)'
+            # if measured_data is not None:
+            #     measured_data /= scale
 
         plt.plot(
             eval_times,
             cX,
             '-',
-            label='$K_i = $' + str(round( ki, 3 ) )
+            label='$K_i = $' + str(round( ki, 5 ) )
             )
 
     # Plot curve for ZERO inhibition (pure Monod dynamics)
