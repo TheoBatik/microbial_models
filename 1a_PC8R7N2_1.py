@@ -18,7 +18,7 @@ print( '\n'*2, 'Summary of params used for species ', mic_name)
 txb4 = np.array([ 60, 65, 69, 72, 78, 80, 84, 99.5, 105.5, 108, 121, 128.5, 132, 144])
 tx = txb4-54
 Xy = np.array([ 0.99, 1.55, 2.48, 3.66, 4.01, 5.40, 5.63, 12.74, 10.62, 11.59, 14.06, 14.67, 23.77, 22.07])
-#Sy = np.array([150.539, 144.564, 142.573, 135.602, 132.614, 126.141, 127.137, 123.154, 117.676, 114.689, 109.71, 100.747, 88.2988, 83.8174, 84.3154, 73.8589, 60.9129, 49.4606, 45.9751])
+# Sy = np.array([150.539, 144.564, 142.573, 135.602, 132.614, 126.141, 127.137, 123.154, 117.676, 114.689, 109.71, 100.747, 88.2988, 83.8174]) #, 84.3154, 73.8589, 60.9129, 49.4606, 45.9751])
 #Py = np.array([0, 1.83406, 4.58515, 7.64192, 9.47598, 17.1179, 19.2576, 17.4236, 26.8996, 30.262, 35.7642, 39.738, 43.4061, 48.6026, 51.3537, 56.2445, 57.7729, 60.8297, 68.7773])
 
 X0 = 0.88 #0.04 #g/L
@@ -69,13 +69,15 @@ def regress(params):
 
     c = odeint(MONOD, b0,tx, args=(umax, Ks, Yxs))
     cX = c[:, 0]
+    # cS = c[:, 1]
+
     I = (Xy - cX)**2
     # I = Py - cP
     #weight = [1, 1, 10, 10, 10, 10, 20, 20, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 10]
     #weight = [10, 10, 100, 50, 20, 20, 10, 1, 1, 10, 10, 19, 10, 10, 1, 1, 1]
     #weight = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-
-    I = ((Xy - cX) ) ** 2 # * weight) ** 2
+    # I = ((Xy - cX) ) ** 2 + ((Sy - cX) ) ** 2 # * weight) ** 2
+    
     return I
 
 
@@ -133,23 +135,23 @@ Kis = [2, 3, 5, 10]
 args = (umax, Ks, Yxs)
 
 g = odeint(MONOD, b0, times, args=args)
-zero_inhib = g[:,0] # Biomass concentration
+cX_no_inhib = g[:,0] # Biomass concentration
+cS_no_inhib = g[:,1] # Substrate concentration
+
 
 plot_inhibition_curves(
     times,
     b0,
     Kis,
     args,
-    zero_inhib,
     haldane,
     mic_name,
-    xvline,
+    cX_no_inhib=cX_no_inhib,
+    cS_no_inhib=cS_no_inhib,
+    xvline=xvline,
     show_fig=show_fig,
-    measured_data=Xy,
-    measured_times=tx
+    cX_measured=Xy,
+    # cS_measured=Sy,
+    measurement_times=tx
 )
 
-
-
-# Plot on all variables 
-# Params 

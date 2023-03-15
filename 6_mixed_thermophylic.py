@@ -129,19 +129,23 @@ Kis = np.asarray([2, 3, 5, 10, ]) * 1 / 10000
 args = (umax, Ks, Yps, Yxs)
 
 c_monod = odeint(monod, initial_states, times_p, args=args)
-zero_inhib = c_monod[:,0] # Biomass concentration
+cX_no_inhib = c_monod[:,0]  # Biomass concentration
+cS_no_inhib = c_monod[:,1] # Substrate concentration
 
 plot_inhibition_curves(
     times_p,
     initial_states,
     Kis,
     args,
-    zero_inhib,
     haldane_with_products,
     mic_name,
-    xvline,
-    cells=8,
+    cX_no_inhib=cX_no_inhib,
+    cS_no_inhib=cS_no_inhib,
+    xvline=xvline,
     show_fig=show_fig,
-    measured_data=states_m,
-    measured_times=times_m
+    cX_measured=states_m[:,0],
+    # cS_measured=[:,1],
+    measurement_times=times_m,
+    cells=True,
+    scale_cX=None#1e8
 )

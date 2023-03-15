@@ -265,26 +265,23 @@ Kis = [0.0005, 0.001, 0.002] #np.logspace(-4, -2, 4) #(1, 200, 5) # [1, 1.7, 3]
 args = (Vmax, Km, Yps, Yxs)
 
 g = odeint(Monod, b0, times, args=args)
-zero_inhib = g[:,0] # Biomass concentration
-# zero_inhib /= 10e12
+cX_no_inhib = g[:,0] # Biomass concentration
+cS_no_inhib = g[:,1] # Substrate concentration
 
 plot_inhibition_curves(
     times,
     b0,
     Kis,
     args,
-    zero_inhib,
     haldane_with_products,
     mic_name,
-    xvline,
+    cX_no_inhib=cX_no_inhib,
+    cS_no_inhib=cS_no_inhib,
+    xvline=xvline,
     show_fig=show_fig,
-    # cells=12,
+    cX_measured=DbiomassAve,
     cells=True,
-    measured_data=DbiomassAve,
-    measured_times=Dt
+    # cS_measured=Sy,
+    measurement_times=Dt
 )
-
-# remove ki=1 curve
-# Move vertical line to 216
 # Round the ki's => scientific nt
-# better spacing

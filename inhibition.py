@@ -48,72 +48,92 @@ def plot_inhibition_curves(
     b0, # initial conditions
     inhibs, # list of inhibition constant values
     args, # (limiting rate constant, Michaelis constant, substrate consumption factor,... )
-    zero_inhib, # conc. for zero inhibition (e.g. from MONOD)
     inhib_func,
     mic_name, # name of micro-organism
-    xvline,
+    cX_no_inhib=None, # conc. for biomass - zero inhibition (i.e. using Monod)
+    cS_no_inhib=None, # conc. for substrate - zero inhibition
+    cP_no_inhib=None, # conc. for product - zero inhibition
+    cX_measured=None, # conc. for biomass - measured
+    cS_measured=None, # conc. for substrate - measured
+    cP_measured=None, # conc. for product - measured
+    measurement_times=None,
     save_fig=True,
     show_fig=True,
-    cells=True, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
-    measured_data=None,
-    measured_times=None
+    xvline=None,
+    cells=False, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
+    scale_cX=None,
+    plot_substrate=True
     ):
 
+    ##################################################################################
 
-    # Create figure
+    # Create figure for biomass concentrations
     plt.figure()
 
-    # Plot inhibited growth curves (for each item in kis)
-    for ki in inhibs:
-        
-        g = odeint(inhib_func, b0, eval_times, args=args + (ki,))
-        cX = g[:,0] # Biomass concentration
-        label='$K_i = $' + str(ki)
+    # Plot predicted biomass for various inhibition constants
+    if cX_no_inhib is not None:
 
+        # Plot biomass inhibited growth curves (for each item in kis)
+        for ki in inhibs:
+            
+            g = odeint(inhib_func, b0, eval_times, args=args + (ki,))
+            cX = g[:,0] # Biomass concentration
+            
+            if scale_cX is not None:
+                cX *= scale_cX
+                # cX_no_inhib *= 100
+
+            label='$K_i = $' + str(ki)
+
+            plt.plot(
+                eval_times,
+                cX,
+                '-',
+                label='$K_i = $' + str(round( ki, 5 ) )
+                )
+
+        if cells:
+            ylabel = 'Biomass Concentration (cells/L)'
+        else:
+            ylabel = 'Biomass Concentration (g/L)'
+
+                # if len(cells_s) > 1:
+                #     ylabel = f'Biomass Concentration ($10^{cells_s[0]}$' + f'$^{cells_s[1]}$ cells/L)'
+                # else:
+                #     ylabel = f'Biomass Concentration ($10^{cells_s}$ cells/L)'
+                # scale = 10**(cells) 
+                # cX /= scale
+                # zero_inhib /= scale
+                # cells_s = str(cells)
+
+                # if measured_data is not None:
+                #     measured_data /= scale
+    
+        # Plot biomass curve for ZERO inhibition (pure Monod dynamics)
         plt.plot(
             eval_times,
-            cX,
+            cX_no_inhib,
             '-',
-            label='$K_i = $' + str(round( ki, 5 ) )
+            label='No Inhibition'
             )
 
-    if cells:
-        ylabel = 'Biomass Concentration (cells/L)'
-    else:
-        ylabel = 'Biomass Concentration (g/L)'
+    # Plot biomass measured data
+    if cX_measured is not None:
 
-            # scale = 10**(cells) 
-            # cX /= scale
-            # zero_inhib /= scale
-            # cells_s = str(cells)
-            # if len(cells_s) > 1:
-            #     ylabel = f'Biomass Concentration ($10^{cells_s[0]}$' + f'$^{cells_s[1]}$ cells/L)'
-            # else:
-            #     ylabel = f'Biomass Concentration ($10^{cells_s}$ cells/L)'
-
-            # if measured_data is not None:
-            #     measured_data /= scale
-    
-    # Plot curve for ZERO inhibition (pure Monod dynamics)
-    plt.plot(
-        eval_times,
-        zero_inhib,
-        '-',
-        label='No Inhibition'
-        )
-
-    # Plot measured data
-    if measured_data is not None:
+        if scale_cX is not None:
+            cX_measured *= scale_cX
 
         plt.plot(
-            measured_times,
-            measured_data, 
+            measurement_times,
+            cX_measured, 
             'o',
+            ms=3.5,
             label='Measured'
         )
         
-    # Plot vertical line at 48 hours
-    plt.axvline(x = xvline, linestyle = '--', color = '0.8')
+    # Plot vertical line at (xvline) hours
+    if xvline is not None:
+        plt.axvline(x = xvline, linestyle = '--', color = '0.8')
 
     # Finalise
     plt.xlabel('Time (hours)')
@@ -125,8 +145,68 @@ def plot_inhibition_curves(
     plt.title( title, loc='center', wrap=True )
     plt.legend()
     if save_fig:
-        save_at = 'plots/Inhibition curve for ' + mic_name.strip('.') + '.jpeg'
+        save_at = 'plots/Biomass inhibition curve for ' + mic_name.strip('.') + '.jpeg'
         plt.savefig( save_at, dpi=200 )
     if show_fig:
         plt.show()
-    
+
+
+    ##################################################################################
+
+    # Create figure for substrate concentrations
+    plt.figure()
+
+    # Plot predicted substrate for various inhibition constants
+    if cS_no_inhib is not None:
+
+        # Plot substrate inhibited growth curves (for each item in kis)
+        for ki in inhibs:
+            
+            g = odeint(inhib_func, b0, eval_times, args=args + (ki,))
+            cS = g[:,1] # Substrate concentration
+            label='$K_i = $' + str(ki)
+
+            plt.plot(
+                eval_times,
+                cS,
+                '-',
+                label='$K_i = $' + str(round( ki, 5 ) )
+            )
+
+        # Plot substrate curve for ZERO inhibition (pure Monod dynamics)
+        plt.plot(
+            eval_times,
+            cS_no_inhib,
+            '-',
+            label='No Inhibition'
+        )
+
+    # Plot substrate measured data
+    if cS_measured is not None:
+
+        plt.plot(
+            measurement_times,
+            cS_measured, 
+            'o',
+            ms=3,
+            label='Measured'
+        )
+        
+    # Plot vertical line at (xvline) hours
+    if xvline is not None:
+        plt.axvline(x = xvline, linestyle = '--', color = '0.8')
+
+    # Finalise
+    plt.xlabel('Time (hours)')
+    plt.ylabel( 'Substrate Concentration (g/L)' )
+    title_start = 'Predicted substrate concentrations over time '
+    title_mic_name = 'for ' + mic_name + ' '
+    title_end = 'for various values of inhibition constant and in the absence of inhibition'
+    title = title_start + title_mic_name + title_end
+    plt.title( title, loc='center', wrap=True )
+    plt.legend()
+    if save_fig:
+        save_at = 'plots/Substrate inhibition curve for ' + mic_name.strip('.') + '.jpeg'
+        plt.savefig( save_at, dpi=200 )
+    if show_fig:
+        plt.show()

@@ -121,19 +121,22 @@ Kis = [2, 3, 5, 10]
 args = (umax, Ks, Yxs)
 
 g = odeint(MONOD, b0, times, args=args)
-zero_inhib = g[:,0] # Biomass concentration
+cX_no_inhib = g[:,0] # Biomass concentration
+cS_no_inhib = g[:,1] # Substrate concentration
 
 plot_inhibition_curves(
     times,
     b0,
     Kis,
     args,
-    zero_inhib,
     haldane,
     mic_name,
-    xvline,
+    cX_no_inhib=cX_no_inhib,
+    cS_no_inhib=cS_no_inhib,
+    xvline=xvline,
     show_fig=show_fig,
-    measured_data=Xy,
-    measured_times=tx
+    cX_measured=Xy,
+    # cS_measured=Sy,
+    measurement_times=tx
 )
 
