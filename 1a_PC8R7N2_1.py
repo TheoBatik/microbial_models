@@ -43,10 +43,7 @@ params.add('Ks', value= Ks, min=0, vary=True)
 params.add('Yxs', value= Yxs, min=0, vary=True)
 params.add('Yps', value= Yps, min=0, vary=True)
 
-
 ##############################################################################
-
-t = np.linspace(1e-5,tx[-1],151)
 
 def regress(params):
     umax = params['umax'].value
@@ -76,11 +73,6 @@ if(fit_data == 1):
     Yxs = result.params['Yxs'].value
     Yps = result.params['Yps'].value
 
-
-# g = odeint(monod, b0,t, args=(umax, Ks, Yps, Yxs))
-# cX = g[:,0]
-# cS = g[:,1]
-# print(len(tx))
 
 
 # plt.figure()
