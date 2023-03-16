@@ -16,6 +16,35 @@ def load_csv( csv_name='measured_data' ):
     matrix.astype( np.float32 )
     return matrix, header
 
+# Not in use
+def contois(f,t, umax, Ks, Yps, Yxs):
+    X = f[0]
+    S = f[1]
+    P = f[2]
+
+    u = umax*(S/(Ks*X+S))
+    #u = umax*(S/(Ks+S))
+    ddt0 = u*X #dXdt
+    ddt1 = -ddt0/Yxs   #dSdt
+    ddt2 = -ddt1*Yps
+
+    ddt = [ddt0, ddt1, ddt2]
+    return ddt
+
+# In use for not inhibition parameter fitting
+def monod(f,t, Vmax, Km, Yps, Yxs):
+    X = f[0]
+    S = f[1]
+    P = f[2]
+
+    u = Vmax * (S / (Km + S))
+    ddt0 = u * X  # dXdt
+    ddt1 = -ddt0 / Yxs  # dSdt     strictly growth associated growth, cell maintenance
+    ddt2 = (-ddt1) * Yps  # dPdt
+
+    ddt = [ddt0, ddt1, ddt2]
+    return ddt
+
 
 def haldane(f, t, umax, Ks, Yxs, ki):
     X = f[0]
