@@ -15,6 +15,7 @@ from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
 from inhibition import plot_inhibition_curves, haldane_with_products
 from control import show_fig
+from control import fit_report_toggle
 
 #######################################################################################
 
@@ -36,7 +37,7 @@ print(state_names, '\n', states_m)
 # Convert optimal density to biomass concentration (g/L) and mg to g/L
 conversion_factor_OD = 0.24
 states_m[:, 0] = states_m[:, 0] * conversion_factor_OD
-states_m[:, 1] = states_m[:, 1] / 1000
+states_m[:, 1] = states_m[:, 1] / 1000 # * (1000 ml / L)
 state_names[0] = 'Biomass Concentration (g/L)'
 state_names[1] = 'Cyanide Concentration (g/L)'
 
@@ -47,7 +48,7 @@ print(header[0], times_m)
 
 # Set initial states
 innoculum_size_0 = 1.3e8
-conversion_factor_IS =  10e-10 # 10e-8 # grams/cell
+conversion_factor_IS = 10e-10 #  # grams/cell
 cX_0 =  innoculum_size_0 * conversion_factor_IS
 states_m[0, 0] = cX_0
 print('\nProcessed measured states')
@@ -118,6 +119,8 @@ def regress( params ):
 method = 'Nelder'
 result = minimize(regress, params, method=method)
 result.params.pretty_print()
+if fit_report_toggle:
+    print(fit_report(result))
 
 # Redefine fitted model params
 umax = result.params['umax'].value
@@ -189,7 +192,8 @@ plt.ylabel( 'Biomass Concentration (g/L)' )
 title = 'Biomass concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
 plt.title( title, loc='center', wrap=True )
 plt.legend()
-plt.show()
+if show_fig:
+    plt.show()
 
 
 c_monod = odeint(monod, initial_states, times, args=args)
@@ -214,4 +218,5 @@ plt.ylabel( 'Product Concentration (g/L)' )
 title = 'Product concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
 plt.title( title, loc='center', wrap=True )
 plt.legend()
-plt.show()
+if show_fig:
+    plt.show()

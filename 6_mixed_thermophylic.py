@@ -16,6 +16,7 @@ from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
 from inhibition import plot_inhibition_curves, haldane_with_products
 from control import show_fig
+from control import fit_report_toggle
 
 #######################################################################################
 
@@ -33,8 +34,8 @@ state_names = header[1]
 print('\nRaw extracted states')
 print(state_names, '\n', states_m)
 
-# Convert biomass concentration (10^8 cells/ml) to (cells/L)
-states_m = states_m * 1e8 / 1e3
+# Convert biomass concentration (10^8 cells/ml) to (g/L)
+states_m = (states_m / (1e9)) * 1e8 / 1e3 # (grams/cell) * (order of cells) / (ml/L)
 state_names = 'Biomass Concentration (cells/L)'
 print('\nProcessed measured states')
 print(state_names, '\n', states_m)
@@ -46,7 +47,7 @@ print(header[0], times_m)
 
 # Set initial states
 print('\nInitial measured states')
-initial_states = [states_m[0], 20, 0] # 20g/L substrate in Luria broth + 5 g glycine
+initial_states = [states_m[0], 10, 0] # 20g/L substrate in Luria broth + 5 g glycine
 print(initial_states)
 
 
@@ -76,7 +77,7 @@ Yxs = 2
 Yps = 0.5445
 
 params = Parameters()
-params.add('umax', value= umax, min=0, vary=True)
+params.add('umax', value= umax, min=0.1, vary=True)
 params.add('Ks', value= Ks, min=0, vary=True)
 params.add('Yxs', value= Yxs, min=0, vary=True)
 params.add('Yps', value= Yxs, min=0, vary=True)
@@ -112,6 +113,8 @@ def regress( params ):
 method = 'Nelder'
 result = minimize(regress, params, method=method)
 result.params.pretty_print()
+if fit_report_toggle:
+    print(fit_report(result))
 
 # Redefine fitted model params
 umax = result.params['umax'].value
@@ -124,8 +127,8 @@ Yps = result.params['Yps'].value
 # Plot inhibition curves
 
 xvline = 24
-times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 550, 500)) ) )
-Kis = np.asarray([2, 3, 5, 10, ]) * 1 / 100000
+times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1750, 600)) ) )
+Kis = np.asarray([2, 3, 5, 10, ])
 args = (umax, Ks, Yps, Yxs)
 
 c_monod = odeint(monod, initial_states, times_p, args=args)
@@ -150,5 +153,5 @@ plot_inhibition_curves(
     measurement_times=times_m,
     # cells=True,
     # scale_cX=None#1e8
-    cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
+    # cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
 )

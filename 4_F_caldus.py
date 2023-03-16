@@ -23,6 +23,7 @@ from numpy.matlib import repmat
 from scipy.integrate import odeint, simps
 from lmfit import Parameters, minimize, fit_report
 import pandas as pd
+from control import fit_report_toggle
 
 mic_name = 'F. Caldus'
 print( '\n'*2, 'Summary of params used for species ', mic_name)
@@ -142,8 +143,9 @@ def regress(params):
 METHOD =  'nelder-mead' # 'least-sq' #
 result = minimize(regress, params, method=METHOD)
 result.params.pretty_print()
-print(fit_report(result))
-print(result.residual)
+if fit_report_toggle:
+    print(fit_report(result))
+    print(result.residual)
 
 
 

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
+from control import fit_report_toggle
 
 mic_name = 'FBOC9N2.6'
 print( '\n'*2, 'Summary of params used for species ', mic_name)
@@ -72,7 +73,8 @@ t = np.linspace(1e-5,tx[-1],151)
 METHOD = 'Nelder'
 result = minimize(regress,params, method=METHOD)
 result.params.pretty_print()
-#print(fit_report(result))
+if fit_report_toggle:
+    print(fit_report(result))
 
 fit_data = 1
 
