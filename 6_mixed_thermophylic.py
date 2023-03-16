@@ -35,7 +35,7 @@ print('\nRaw extracted states')
 print(state_names, '\n', states_m)
 
 # Convert biomass concentration (10^8 cells/ml) to (g/L)
-states_m = (states_m / (1e9)) * 1e8 / 1e3 # (grams/cell) * (order of cells) / (ml/L)
+states_m = (states_m / (1e15)) * 1e8 / 1e3 # (grams/cell) * (order of cells) / (ml/L)
 state_names = 'Biomass Concentration (cells/L)'
 print('\nProcessed measured states')
 print(state_names, '\n', states_m)
@@ -47,7 +47,7 @@ print(header[0], times_m)
 
 # Set initial states
 print('\nInitial measured states')
-initial_states = [states_m[0], 10, 0] # 20g/L substrate in Luria broth + 5 g glycine
+initial_states = [states_m[0], 25, 0] # 20g/L substrate in Luria broth + 5 g glycine
 print(initial_states)
 
 
@@ -71,19 +71,20 @@ def monod(f,t, umax, Ks, Yps, Yxs):
 
 
 # Set model params
-umax = 0.18 #/h
+umax = 0.01 #/h
 Ks = 18.35 #g/L
 Yxs = 2
 Yps = 0.5445
 
 params = Parameters()
-params.add('umax', value= umax, min=0.1, vary=True)
+params.add('umax', value= umax, min=0, vary=True)
 params.add('Ks', value= Ks, min=0, vary=True)
 params.add('Yxs', value= Yxs, min=0, vary=True)
 params.add('Yps', value= Yxs, min=0, vary=True)
 
 
 # Define regression
+norm_states_m = np.linalg.norm(states_m)
 def regress( params ):
 
     # Unpack params
@@ -94,13 +95,13 @@ def regress( params ):
 
     # Model prediction
     c = odeint(monod, initial_states, times_m, args=(umax, Ks, Yps, Yxs))
-    cX = c[:, 0]
+    cX = np.linalg.norm(c[:, 0])
     # cS = c[:, 1]
-    cP = c[:, 2]
+    # cP = c[:, 2]
     del c
 
     # Compute error
-    I = (states_m - cX)**2
+    I = (norm_states_m - cX)**2
 
     return I
 
@@ -140,6 +141,29 @@ plot_inhibition_curves(
     times_p,
     initial_states,
     Kis,
+    args,
+    haldane_with_products,
+    mic_name,
+    cX_no_inhib=cX_no_inhib,
+    cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
+    xvline=xvline,
+    show_fig=show_fig,
+    cX_measured=states_m,
+    # cS_measured=[:,1],
+    measurement_times=times_m,
+    # cells=True,
+    # scale_cX=None#1e8
+    # cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
+)
+
+
+# Plot zero inhib curves
+times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 80, 600)) ) )
+plot_inhibition_curves(
+    times_p,
+    initial_states,
+    [],
     args,
     haldane_with_products,
     mic_name,
