@@ -108,7 +108,7 @@ cS = g[:,1]
 
 xvline = 48
 times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 180)) ) )
-Kis = [2, 3, 5, 10]
+Kis = [] # [2, 3, 5, 10]
 args = (umax, Ks, Yps, Yxs)
 
 g = odeint(monod, b0, times, args=args)

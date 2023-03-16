@@ -145,7 +145,7 @@ def plot_inhibition_curves(
             eval_times,
             cX_no_inhib,
             '-',
-            label='No Inhibition'
+            label='No Inhibition (predicted)'
             )
 
     # Plot biomass measured data
@@ -159,7 +159,7 @@ def plot_inhibition_curves(
             cX_measured, 
             'o',
             ms=3.5,
-            label='Measured'
+            label='No inhibition (measured)'
         )
         
     # Plot vertical line at (xvline) hours
@@ -176,7 +176,13 @@ def plot_inhibition_curves(
     plt.title( title, loc='center', wrap=True )
     plt.legend()
     if save_fig:
-        save_at = 'plots/Biomass inhibition curve for ' + mic_name.strip('.') + '.jpeg'
+        if len(inhibs) == 0:
+            plot_name_base =  'Biomass curve for '
+            plot_name_end = ' (no inhibition)'
+        else:
+            plot_name_base =  'Biomass inhibition curve for '
+            plot_name_end = ''
+        save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
         plt.savefig( save_at, dpi=200 )
     if show_fig:
         plt.show()
@@ -209,7 +215,7 @@ def plot_inhibition_curves(
             eval_times,
             cS_no_inhib,
             '-',
-            label='No Inhibition'
+            label='No Inhibition (predicted)'
         )
 
     # Plot substrate measured data
@@ -220,7 +226,7 @@ def plot_inhibition_curves(
             cS_measured, 
             'o',
             ms=3,
-            label='Measured'
+            label='No Inhibition (measured)'
         )
         
     # Plot vertical line at (xvline) hours
@@ -237,7 +243,13 @@ def plot_inhibition_curves(
     plt.title( title, loc='center', wrap=True )
     plt.legend()
     if save_fig:
-        save_at = 'plots/Substrate inhibition curve for ' + mic_name.strip('.') + '.jpeg'
+        if len(inhibs) == 0:
+            plot_name_base =  'Substrate curve for '
+            plot_name_end = ' (no inhibition)'
+        else:
+            plot_name_base =  'Substrate inhibition curve for '
+            plot_name_end = ''
+        save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
         plt.savefig( save_at, dpi=200 )
     if show_fig:
         plt.show()
@@ -269,7 +281,7 @@ def plot_inhibition_curves(
             eval_times,
             cP_no_inhib,
             '-',
-            label='No Inhibition'
+            label='No Inhibition (predicted)'
         )
 
         # Plot product measured data
@@ -280,7 +292,7 @@ def plot_inhibition_curves(
                 cP_measured, 
                 'o',
                 ms=3,
-                label='Measured'
+                label='No inhibition (measured)'
             )
         
         # Plot vertical line at (xvline) hours
@@ -297,7 +309,13 @@ def plot_inhibition_curves(
         plt.title( title, loc='center', wrap=True )
         plt.legend()
         if save_fig:
-            save_at = 'plots/Product inhibition curve for ' + mic_name.strip('.') + '.jpeg'
+            if len(inhibs) == 0:
+                plot_name_base =  'Product curve for '
+                plot_name_end = ' (no inhibition)'
+            else:
+                plot_name_base =  'Product inhibition curve for '
+                plot_name_end = ''
+            save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
             plt.savefig( save_at, dpi=200 )
         if show_fig:
             plt.show()
