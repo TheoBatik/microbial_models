@@ -136,7 +136,6 @@ def regress(params):
     #I = (DbiomassAve - cX) **2
     #I = ((DPAve - cP) * weight) ** 2
 
-
     return I
 
 

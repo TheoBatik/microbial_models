@@ -4,11 +4,16 @@ including inhibition dynamics based on Haldane's equation
 (greater yield)
 '''
 
+##############################################################################
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
 from lmfit import Parameters, fit_report, minimize
-from control import fit_report_toggle
+from control import fit_report_toggle, show_fig
+from inhibition import plot_inhibition_curves, haldane_with_products, monod
+
+##############################################################################
 
 mic_name = 'PC8R7N2.1'
 print( '\n'*2, 'Summary of params used for species ', mic_name)
@@ -25,65 +30,37 @@ Xy = np.array([ 0.99, 1.55, 2.48, 3.66, 4.01, 5.40, 5.63, 12.74, 10.62, 11.59, 1
 X0 = 0.88 #0.04 #g/L
 S0 = 10 #g/L # check glycerol
 P0 = 0 #g/
+b0 = [X0, S0, P0]
 
 umax = 0.18 #/h
 Ks = 18.35 #19.8 #g/L
 Yxs = 2 # 0.047 #0.71#0.0732
+Yps = 0.6
 
 params = Parameters()
 params.add('umax', value= umax, min=0, vary=False)
 params.add('Ks', value= Ks, min=0, vary=True)
 params.add('Yxs', value= Yxs, min=0, vary=True)
+params.add('Yps', value= Yps, min=0, vary=True)
 
 
-def CONTOIS(f,t, umax, Ks, Yps, Yxs):
-    X = f[0]
-    S = f[1]
-    P = f[2]
+##############################################################################
 
-    u = umax*(S/(Ks*X+S))
-    #u = umax*(S/(Ks+S))
-    ddt0 = u*X #dXdt
-    ddt1 = -ddt0/Yxs   #dSdt
-    ddt2 = -ddt1*Yps
-
-    ddt = [ddt0, ddt1, ddt2]
-    return ddt
-
-
-def MONOD(f, t, umax, Ks, Yxs):
-    X = f[0]
-    S = f[1]
-
-    u = umax*(S/(Ks+S))
-    ddt0 = u*X           # dXdt
-    ddt1 = -ddt0/Yxs    # dSdt     strictly growth associated growth, cell maintenance
-
-    ddt = [ddt0, ddt1]
-    return ddt
-
+t = np.linspace(1e-5,tx[-1],151)
 
 def regress(params):
     umax = params['umax'].value
     Ks = params['Ks'].value
+    Yps = params['Yps'].value
     Yxs = params['Yxs'].value
 
-    c = odeint(MONOD, b0,tx, args=(umax, Ks, Yxs))
+    c = odeint(monod, b0, tx, args=(umax, Ks, Yps, Yxs))
     cX = c[:, 0]
-    # cS = c[:, 1]
 
     I = (Xy - cX)**2
-    # I = Py - cP
-    #weight = [1, 1, 10, 10, 10, 10, 20, 20, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 10]
-    #weight = [10, 10, 100, 50, 20, 20, 10, 1, 1, 10, 10, 19, 10, 10, 1, 1, 1]
-    #weight = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    # I = ((Xy - cX) ) ** 2 + ((Sy - cX) ) ** 2 # * weight) ** 2
     
     return I
 
-
-b0 = [X0, S0]
-t = np.linspace(1e-5,tx[-1],151)
 
 METHOD = 'Nelder'
 result = minimize(regress, params, method=METHOD)
@@ -97,9 +74,10 @@ if(fit_data == 1):
     umax = result.params['umax'].value
     Ks = result.params['Ks'].value
     Yxs = result.params['Yxs'].value
+    Yps = result.params['Yps'].value
 
 
-g = odeint(MONOD, b0,t, args=(umax, Ks, Yxs))
+g = odeint(monod, b0,t, args=(umax, Ks, Yps, Yxs))
 cX = g[:,0]
 cS = g[:,1]
 # print(len(tx))
@@ -111,7 +89,7 @@ cS = g[:,1]
 # plt.plot(tx, Xy, 'o')
 # plt.xlabel('Time (hours)')
 # plt.ylabel('Biomass Concentration (g/L)')
-# plt.legend(['Monod', 'Experimental'])
+# plt.legend(['monod', 'Experimental'])
 
 
 # plt.figure()
@@ -120,7 +98,7 @@ cS = g[:,1]
 # #plt.plot(tx, Sy, 'o')
 # plt.xlabel('Time (hours)')
 # plt.ylabel('Glycerol Concentration (g/L)')
-# #plt.legend(['Contois', 'Monod', 'Experimental'])
+# #plt.legend(['Contois', 'monod', 'Experimental'])
 
 # plt.show()
 
@@ -128,28 +106,26 @@ cS = g[:,1]
 
 # Plot inhibition curves
 
-from inhibition import plot_inhibition_curves, haldane
-from control import show_fig
-
 xvline = 48
 times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 180)) ) )
 Kis = [2, 3, 5, 10]
-args = (umax, Ks, Yxs)
+args = (umax, Ks, Yps, Yxs)
 
-g = odeint(MONOD, b0, times, args=args)
+g = odeint(monod, b0, times, args=args)
 cX_no_inhib = g[:,0] # Biomass concentration
 cS_no_inhib = g[:,1] # Substrate concentration
-
+cP_no_inhib = g[:,2] # Product concentration
 
 plot_inhibition_curves(
     times,
     b0,
     Kis,
     args,
-    haldane,
+    haldane_with_products,
     mic_name,
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
     xvline=xvline,
     show_fig=show_fig,
     cX_measured=Xy,
