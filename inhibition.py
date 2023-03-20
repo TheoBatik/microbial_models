@@ -97,12 +97,13 @@ def plot_inhibition_curves(
 
     ##################################################################################
 
-    # Create figure for biomass concentrations
-    plt.figure()
-    ylabel=cX_label_y
 
     # Plot predicted biomass for various inhibition constants
     if cX_no_inhib is not None:
+
+        # Create figure for biomass concentrations
+        plt.figure()
+        ylabel=cX_label_y
 
         # Plot biomass inhibited growth curves (for each item in kis)
         for ki in inhibs:
@@ -148,53 +149,54 @@ def plot_inhibition_curves(
             label='No Inhibition (predicted)'
             )
 
-    # Plot biomass measured data
-    if cX_measured is not None:
+        # Plot biomass measured data
+        if cX_measured is not None:
 
         # if scale_cX is not None:
         #     cX_measured *= scale_cX
 
-        plt.plot(
-            measurement_times,
-            cX_measured, 
-            'o',
-            ms=3.5,
-            label='No inhibition (measured)'
-        )
+            plt.plot(
+                measurement_times,
+                cX_measured, 
+                'o',
+                ms=3.5,
+                label='No inhibition (measured)'
+            )
         
-    # Plot vertical line at (xvline) hours
-    if xvline is not None:
-        plt.axvline(x = xvline, linestyle = '--', color = '0.8')
+        # Plot vertical line at (xvline) hours
+        if xvline is not None:
+            plt.axvline(x = xvline, linestyle = '--', color = '0.8')
 
-    # Finalise
-    plt.xlabel('Time (hours)')
-    plt.ylabel( cX_label_y )
-    title_start = 'Predicted biomass concentrations over time '
-    title_mic_name = 'for ' + mic_name + ' '
-    title_end = 'for various values of inhibition constant and in the absence of inhibition'
-    title = title_start + title_mic_name + title_end
-    plt.title( title, loc='center', wrap=True )
-    plt.legend()
-    if save_fig:
-        if len(inhibs) == 0:
-            plot_name_base =  'Biomass curve for '
-            plot_name_end = ' (no inhibition)'
-        else:
-            plot_name_base =  'Biomass inhibition curve for '
-            plot_name_end = ''
-        save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
-        plt.savefig( save_at, dpi=200 )
-    if show_fig:
-        plt.show()
+        # Finalise
+        plt.xlabel('Time (hours)')
+        plt.ylabel( cX_label_y )
+        title_start = 'Predicted biomass concentrations over time '
+        title_mic_name = 'for ' + mic_name + ' '
+        title_end = 'for various values of inhibition constant and in the absence of inhibition'
+        title = title_start + title_mic_name + title_end
+        plt.title( title, loc='center', wrap=True )
+        if len(inhibs) > 0 or cX_measured is not None:
+            plt.legend()
+        if save_fig:
+            if len(inhibs) == 0:
+                plot_name_base =  'Biomass curve for '
+                plot_name_end = ' (no inhibition)'
+            else:
+                plot_name_base =  'Biomass inhibition curve for '
+                plot_name_end = ''
+            save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
+            plt.savefig( save_at, dpi=200 )
+            if show_fig:
+                plt.show()
 
 
     ##################################################################################
 
-    # Create figure for substrate concentrations
-    plt.figure()
-
     # Plot predicted substrate for various inhibition constants
     if cS_no_inhib is not None:
+
+        # Create figure for substrate concentrations
+        plt.figure()
 
         # Plot substrate inhibited growth curves (for each item in kis)
         for ki in inhibs:
@@ -218,41 +220,43 @@ def plot_inhibition_curves(
             label='No Inhibition (predicted)'
         )
 
-    # Plot substrate measured data
-    if cS_measured is not None:
+        # Plot substrate measured data
+        if cS_measured is not None:
 
-        plt.plot(
-            measurement_times,
-            cS_measured, 
-            'o',
-            ms=3,
-            label='No Inhibition (measured)'
-        )
+            plt.plot(
+                measurement_times,
+                cS_measured, 
+                'o',
+                ms=3,
+                label='No Inhibition (measured)'
+            )
         
-    # Plot vertical line at (xvline) hours
-    if xvline is not None:
-        plt.axvline(x = xvline, linestyle = '--', color = '0.8')
+        # Plot vertical line at (xvline) hours
+        if xvline is not None:
+            plt.axvline(x = xvline, linestyle = '--', color = '0.8')
 
-    # Finalise
-    plt.xlabel('Time (hours)')
-    plt.ylabel( 'Substrate Concentration (g/L)' )
-    title_start = 'Predicted substrate concentrations over time '
-    title_mic_name = 'for ' + mic_name + ' '
-    title_end = 'for various values of inhibition constant and in the absence of inhibition'
-    title = title_start + title_mic_name + title_end
-    plt.title( title, loc='center', wrap=True )
-    plt.legend()
-    if save_fig:
-        if len(inhibs) == 0:
-            plot_name_base =  'Substrate curve for '
-            plot_name_end = ' (no inhibition)'
-        else:
-            plot_name_base =  'Substrate inhibition curve for '
-            plot_name_end = ''
-        save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
-        plt.savefig( save_at, dpi=200 )
-    if show_fig:
-        plt.show()
+        # Finalise
+        plt.xlabel('Time (hours)')
+        plt.ylabel( 'Substrate Concentration (g/L)' )
+        title_start = 'Predicted substrate concentrations over time '
+        title_mic_name = 'for ' + mic_name + ' '
+        title_end = 'for various values of inhibition constant and in the absence of inhibition'
+        title = title_start + title_mic_name + title_end
+        plt.title( title, loc='center', wrap=True )
+        if len(inhibs) > 0 or cS_measured is not None:
+            plt.legend()        
+        if save_fig:
+            if len(inhibs) == 0:
+                plot_name_base =  'Substrate curve for '
+                plot_name_end = ' (no inhibition)'
+            else:
+                plot_name_base =  'Substrate inhibition curve for '
+                plot_name_end = ''
+            save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
+            plt.savefig( save_at, dpi=200 )
+        
+        if show_fig:
+            plt.show()
     
     ##################################################################################
 
@@ -307,7 +311,8 @@ def plot_inhibition_curves(
         title_end = 'for various values of inhibition constant and in the absence of inhibition'
         title = title_start + title_mic_name + title_end
         plt.title( title, loc='center', wrap=True )
-        plt.legend()
+        if len(inhibs) > 0 or cP_measured is not None:
+            plt.legend()
         if save_fig:
             if len(inhibs) == 0:
                 plot_name_base =  'Product curve for '
@@ -317,5 +322,6 @@ def plot_inhibition_curves(
                 plot_name_end = ''
             save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
             plt.savefig( save_at, dpi=200 )
+        
         if show_fig:
             plt.show()
