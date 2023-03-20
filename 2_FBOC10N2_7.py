@@ -144,7 +144,7 @@ plot_inhibition_curves(
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
     cP_no_inhib=cP_no_inhib,
-    xvline=xvline,
+    # xvline=xvline,
     show_fig=show_fig,
     cX_measured=Xy,
     # cS_measured=Sy,
