@@ -54,8 +54,10 @@ states_m[0, 0] = cX_0
 print('\nProcessed measured states')
 print(state_names, '\n', states_m)
 print('\nInitial measured states')
-initial_states = [ cX_0, 20, states_m[0, 1] ] # 20g/L substrate in Luria broth + 5 g glycine
+initial_states = [ cX_0, 5, states_m[0, 1] ] # 5 g glycine
 print(initial_states)
+
+
 
 #######################################################################################
 

@@ -1,2 +1,2 @@
 show_fig = True
-fit_report_toggle = True
+fit_report_toggle = False

@@ -87,6 +87,7 @@ def plot_inhibition_curves(
     cP_measured=None, # conc. for product - measured
     measurement_times=None,
     save_fig=True,
+    save_folder='plots/',
     show_fig=True,
     xvline=None,
     # cells=False, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
@@ -184,7 +185,7 @@ def plot_inhibition_curves(
             else:
                 plot_name_base =  'Biomass inhibition curve for '
                 plot_name_end = ''
-            save_at = 'plots/' + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
+            save_at = save_folder + plot_name_base + mic_name.strip('.') + plot_name_end + '.jpeg'
             plt.savefig( save_at, dpi=200 )
             if show_fig:
                 plt.show()
