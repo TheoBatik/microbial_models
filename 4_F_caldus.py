@@ -65,7 +65,7 @@ D3biomass = alldata[:, 3]
 DbiomassAve = alldata[:, 4]
 
 # Convert biomass from cells/L to g/L
-DbiomassAve = DbiomassAve / 1e12
+DbiomassAve = DbiomassAve / 1e11
 DbiomassAveNorm = np.linalg.norm(DbiomassAve)
 
 D1pH = alldata[:, 5]
@@ -85,7 +85,7 @@ def pH_to_concH(pH):
 
 def pH_to_AcidConc(pH):
     cH = 10 ** (-pH)
-    molP = cH/2
+    molP = cH / 2
     #cP = molP * mwSurlfuricAcid
     return molP
 
@@ -196,21 +196,21 @@ params_bh = [
     params['Yxs'].value
 ]
 
-print(params_bh)
-result_bh = basinhopping(regress_bh, params_bh, niter=100, T=10.0, stepsize=0.5, disp=True)
-print(result_bh)
+# print(params_bh)
+# result_bh = basinhopping(regress_bh, params_bh, niter=100, T=10.0, stepsize=0.5, disp=True)
+# print(result_bh)
 
-# Unpack params
-params = result_bh.x
-Vmax = params[0]
-Km = params[1]
-Yps = params[2]
-Yxs = params[3]
+# # Unpack params
+# params = result_bh.x
+# Vmax = params[0]
+# Km = params[1]
+# Yps = params[2]
+# Yxs = params[3]
 
-print('Km used', Km)
-print('Vmax used', Vmax)
-print('Yps used', Yps)
-print('Yxs used', Yxs)
+# print('Km used', Km)
+# print('Vmax used', Vmax)
+# print('Yps used', Yps)
+# print('Yxs used', Yxs)
 
 
 
@@ -361,7 +361,7 @@ plot_inhibition_curves(
 # Round the ki's => scientific nt
 
 # Zero inhibition 
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 150, 1500)) ) )
+# times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 150, 1500)) ) )
 plot_inhibition_curves(
     times,
     b0,
