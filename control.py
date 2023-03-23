@@ -1,2 +1,2 @@
-show_fig = True
+show_fig = False
 fit_report_toggle = False

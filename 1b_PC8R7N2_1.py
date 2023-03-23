@@ -186,3 +186,10 @@ plot_inhibition_curves(
     # cS_measured=Sy,
     measurement_times=tx
 )
+
+
+print( 'Initial states (X, S, P)', b0)
+print('Ks used', Ks)
+print('umax used', umax)
+print('Yps used', Yps)
+print('Yxs used', Yxs)

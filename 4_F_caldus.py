@@ -381,3 +381,9 @@ plot_inhibition_curves(
     measurement_times=Dt,
     # cX_label_y='Biomass Concentration (cells/L)'
 )
+
+print('Initial states (X, S, P)', b0)
+print('Km used', Km)
+print('Vmax used', Vmax)
+print('Yps used', Yps)
+print('Yxs used', Yxs)

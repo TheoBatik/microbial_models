@@ -36,7 +36,8 @@ print('\nRaw extracted states')
 print(state_names, '\n', states_m)
 
 # Convert biomass concentration (10^8 cells/ml) to (g/L)
-states_m = (states_m / (1e15)) * 1e8 / 1e3 # (grams/cell) * (order of cells) / (ml/L)
+conversion_factor = 1e15
+states_m = (states_m / (conversion_factor)) * 1e8 / 1e3 # (grams/cell) * (order of cells) / (ml/L)
 state_names = 'Biomass Concentration (g/L)'
 print('\nProcessed measured states')
 print(state_names, '\n', states_m)
@@ -279,3 +280,12 @@ plot_inhibition_curves(
     # scale_cX=None#1e8
     # cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
 )
+
+
+
+print( 'Initial states (X, S, P)', initial_states)
+print( 'Conversion factor (cells per g)', '{:.3e}'.format(conversion_factor))
+print('Ks used', '{:.2e}'.format(Ks))
+print('umax used', '{:.2e}'.format(umax))
+print('Yps used', '{:.2e}'.format(Yps))
+print('Yxs used', '{:.2e}'.format(Yxs))

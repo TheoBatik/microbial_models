@@ -57,7 +57,10 @@ print('\nInitial measured states')
 initial_states = [ cX_0, 5, states_m[0, 1] ] # 5 g glycine
 print(initial_states)
 
-
+# Data cleaning
+# for ax in range(0,1):
+#     states_m = np.delete( states_m, [1, 2], ax )
+#     times_m = np.delete( times_m, [1, 2], ax )
 
 #######################################################################################
 
@@ -150,6 +153,18 @@ cX_no_inhib = c_monod[:,0]  # Biomass concentration
 cS_no_inhib = c_monod[:,1] # Substrate concentration
 cP_no_inhib = c_monod[:,2] # Substrate concentration
 
+# Data cleaning
+print('\n'*3)
+print('states_m', states_m)
+print('states_m shape', states_m.shape)
+for ax in range(0,1):
+    states_m = np.delete( states_m, [1, 2], ax )
+    times_m = np.delete( times_m, [1, 2], ax )
+print('\n'*3)
+print('states_m', states_m)
+print('states_m shape', states_m.shape)
+print('\n'*3)
+
 plot_inhibition_curves(
     times_p,
     initial_states,
@@ -159,17 +174,36 @@ plot_inhibition_curves(
     mic_name,
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
-    cP_no_inhib=cP_no_inhib,
+    # cP_no_inhib=cP_no_inhib,
     xvline=xvline,
     show_fig=show_fig,
     cX_measured=states_m[:,0],
-    cP_measured=states_m[:,1],
+    # cP_measured=states_m[:,1],
     measurement_times=times_m,
     # cells=True,
     # scale_cX=None#1e8
     # cX_label_y='Biomass Concentration (cells/L)'
 )
 
+plot_inhibition_curves(
+    times_p,
+    initial_states,
+    Kis,
+    args,
+    haldane_with_products,
+    mic_name,
+    # cX_no_inhib=cX_no_inhib,
+    # cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
+    xvline=xvline,
+    show_fig=show_fig,
+    # cX_measured=states_m[:,0],
+    cP_measured=states_m[:-4,1],
+    measurement_times=times_m[:-4],
+    # cells=True,
+    # scale_cX=None#1e8
+    # cX_label_y='Biomass Concentration (cells/L)'
+)
 
 #######################################################################################
 
@@ -183,11 +217,11 @@ plot_inhibition_curves(
     mic_name,
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
-    cP_no_inhib=cP_no_inhib,
+    # cP_no_inhib=cP_no_inhib,
     # xvline=xvline,
     show_fig=show_fig,
     cX_measured=states_m[:,0],
-    cP_measured=states_m[:,1],
+    # cP_measured=states_m[:,1],
     measurement_times=times_m,
     # cells=True,
     # scale_cX=None#1e8
@@ -195,59 +229,30 @@ plot_inhibition_curves(
 )
 
 
-#######################################################################################
+plot_inhibition_curves(
+    times_p,
+    initial_states,
+    [],
+    args,
+    haldane_with_products,
+    mic_name,
+    # cX_no_inhib=cX_no_inhib,
+    # cS_no_inhib=cS_no_inhib,
+    cP_no_inhib=cP_no_inhib,
+    # xvline=xvline,
+    show_fig=show_fig,
+    # cX_measured=states_m[:,0],
+    cP_measured=states_m[:-4,1],
+    measurement_times=times_m[:-4],
+    # cells=True,
+    # scale_cX=None#1e8
+    # cX_label_y='Biomass Concentration (cells/L)'
+)
 
-# Ad-hoc 
-
-# times = np.linspace(times_m[0], 85, 400) # times_m[-1]
-
-# c_monod = odeint(monod, initial_states, times, args=args)
-# zero_inhib = c_monod[:,0] # Biomass concentration
-# plt.figure()
-# plt.plot(
-#     times_m,
-#     states_m[:,0], 
-#     'o',
-#     label='Measured',
-#     ms=5
-# )
-# plt.plot(
-#     times,
-#     zero_inhib, 
-#     '-',
-#     label='Predicted',
-#     # linewidth=1
-# )
-# plt.xlabel('Time (hours)')
-# plt.ylabel( 'Biomass Concentration (g/L)' )
-# title = 'Biomass concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
-# plt.title( title, loc='center', wrap=True )
-# plt.legend()
-# if show_fig:
-#     plt.show()
-
-
-# c_monod = odeint(monod, initial_states, times, args=args)
-# zero_inhib = c_monod[:,2] # Product concentration
-# plt.figure()
-# plt.plot(
-#     times_m,
-#     states_m[:,1], 
-#     'o',
-#     label='Measured',
-#     ms=5
-# )
-# plt.plot(
-#     times,
-#     zero_inhib, 
-#     '-',
-#     label='Predicted',
-#     # linewidth=1
-# )
-# plt.xlabel('Time (hours)')
-# plt.ylabel( 'Product Concentration (g/L)' )
-# title = 'Product concentrations over time for ' + mic_name + ': comparison of measured data with Monod model prediction'
-# plt.title( title, loc='center', wrap=True )
-# plt.legend()
-# if show_fig:
-#     plt.show()
+print( 'Initial states (X, S, P)', initial_states)
+print( 'Conversion factor (g per cell)', conversion_factor_IS)
+print( 'Conversion factor (optical density to cell number)', conversion_factor_OD)
+print('Ks used', Ks)
+print('umax used', umax)
+print('Yps used', Yps)
+print('Yxs used', Yxs)
