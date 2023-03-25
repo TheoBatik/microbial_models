@@ -72,6 +72,36 @@ def haldane_with_products(f,t, Vmax, Km, Yps, Yxs, ki):
     return ddt
 
 
+def haldane_3_products( f, t, *args ):
+    ''' 
+    System of differential equations for:
+    1) Biomass production, x (Monod dynamics assumed)
+    2) Substrate consumption, s
+    3) Organic acid production, p
+        pgl -> gluconic acid
+        pox -> oxalic acid
+        pci -> citric acid
+    '''
+    # Element-wise unpacking of vectorised solution, f 
+    x = f[0]
+    s = f[1]
+
+    if s <= 0:
+        return np.zeros(5)
+    else:
+        # Biomass production rate
+        dxdt = args[0]*( s/(args[1]+s + (s**2)/args[-1]) ) * x
+
+        # Substrate consumption rate
+        dsdt = - args[2] * dxdt # - args[3] * x
+
+        # Acid production rates
+        dpdt = [ - args[i] * dxdt  for i in [3, 4, 5] ]
+        
+        # Return ODE system
+        return [dxdt, dsdt, *dpdt]
+
+
 def plot_inhibition_curves(
     eval_times, # model evaluation times
     b0, # initial conditions
@@ -262,7 +292,7 @@ def plot_inhibition_curves(
     ##################################################################################
 
     # Plot predicted product for various inhibition constants
-    if (cP_no_inhib is not None) and inhib_func == haldane_with_products:
+    if (cP_no_inhib is not None):
 
         # Create figure for product concentrations
         plt.figure()
