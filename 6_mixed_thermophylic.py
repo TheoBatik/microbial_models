@@ -49,7 +49,7 @@ print(header[0], times_m)
 
 # Set initial states
 print('\nInitial measured states')
-initial_states = [states_m[0], 6, 0] 
+initial_states = [states_m[0], 5, 0] 
 print(initial_states)
 
 
@@ -63,13 +63,16 @@ def monod(f,t, umax, Ks, Yps, Yxs):
     S = f[1]
     P = f[2]
 
-    u = umax * (S / (Ks + S))
-    dXdt = u * X 
-    dSdt = -dXdt / Yxs
-    dPdt = (-dSdt) * Yps  
+    if S < 0:
+        return [0,0,0]
+    else:
+        u = umax * (S / (Ks + S))
+        dXdt = u * X 
+        dSdt = -dXdt / Yxs
+        dPdt = (-dSdt) * Yps  
 
-    dfdt = [dXdt, dSdt, dPdt]
-    return dfdt
+        dfdt = [dXdt, dSdt, dPdt]
+        return dfdt
 
 
 # Set model params
@@ -194,9 +197,9 @@ def regress( params ):
 # Fit model parameters locally to measured data
 
 # Override model params
-umax = 0.018 #0.01 #/h
-Ks = 0.5336 #18.35 #g/L
-Yxs = 0.005064 #1.8
+umax = 0.2 #0.018 #0.01 #/h
+Ks = 18.35 #g/L
+Yxs =  1.8e14 / conversion_factor # 0.005064 #1.8
 Yps = 0.6 # 0.5445
 
 # Reset params 
@@ -225,7 +228,7 @@ Yps = result.params['Yps'].value
 
 xvline = 24
 times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1750, 600)) ) )
-Kis = np.asarray([2, 3, 5, 10, ]) * 10
+Kis = np.asarray([2, 3, 5, 10, ])
 args = (umax, Ks, Yps, Yxs)
 
 c_monod = odeint(monod, initial_states, times_p, args=args)
@@ -243,7 +246,7 @@ plot_inhibition_curves(
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
     cP_no_inhib=cP_no_inhib,
-    xvline=xvline,
+    # xvline=xvline,
     show_fig=show_fig,
     cX_measured=states_m,
     # cS_measured=[:,1],
@@ -255,7 +258,7 @@ plot_inhibition_curves(
 
 
 # Plot zero inhib curves
-times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, times_m[-1], 600)) ) )
+# times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, times_m[-1], 600)) ) )
 c_monod = odeint(monod, initial_states, times_p, args=args)
 cX_no_inhib = c_monod[:,0]  # Biomass concentration
 cS_no_inhib = c_monod[:,1] # Substrate concentration
