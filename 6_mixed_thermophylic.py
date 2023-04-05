@@ -202,32 +202,32 @@ Ks = 18.35 #g/L
 Yxs =  1.8e14 / conversion_factor # 0.005064 #1.8
 Yps = 0.6 # 0.5445
 
-# Reset params 
-params = Parameters()
-params.add('umax', value= umax, min=0, vary=False)
-params.add('Ks', value= Ks, min=0, vary=True)
-params.add('Yxs', value= Yxs, min=0, vary=True)
-params.add('Yps', value= Yxs, min=0, vary=True)
+# # Reset params 
+# params = Parameters()
+# params.add('umax', value= umax, min=0, vary=False)
+# params.add('Ks', value= Ks, min=0, vary=False)
+# params.add('Yxs', value= Yxs, min=0, vary=False)
+# params.add('Yps', value= Yxs, min=0, vary=True)
 
-# Minimise
-method = 'Nelder'
-result = minimize(regress, params, method=method)
-if fit_report_toggle:
-    print(fit_report(result))
-result.params.pretty_print()
+# # Minimise
+# method = 'Nelder'
+# result = minimize(regress, params, method=method)
+# if fit_report_toggle:
+#     print(fit_report(result))
+# result.params.pretty_print()
 
-# Redefine fitted model params
-umax = result.params['umax'].value
-Ks = result.params['Ks'].value
-Yxs = result.params['Yxs'].value
-Yps = result.params['Yps'].value
+# # Redefine fitted model params
+# umax = result.params['umax'].value
+# Ks = result.params['Ks'].value
+# Yxs = result.params['Yxs'].value
+# Yps = result.params['Yps'].value
 
 #######################################################################################
 
 # Plot inhibition curves
 
 xvline = 24
-times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1750, 600)) ) )
+times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1000, 600)) ) )
 Kis = np.asarray([2, 3, 5, 10, ])
 args = (umax, Ks, Yps, Yxs)
 
@@ -248,9 +248,9 @@ plot_inhibition_curves(
     cP_no_inhib=cP_no_inhib,
     # xvline=xvline,
     show_fig=show_fig,
-    cX_measured=states_m,
-    # cS_measured=[:,1],
-    measurement_times=times_m,
+    # cX_measured=states_m,
+    # # cS_measured=[:,1],
+    # measurement_times=times_m,
     # cells=True,
     # scale_cX=None#1e8
     # cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
@@ -276,9 +276,9 @@ plot_inhibition_curves(
     cP_no_inhib=cP_no_inhib,
     # xvline=xvline,
     show_fig=show_fig,
-    cX_measured=states_m,
+    # cX_measured=states_m,
     # cS_measured=[:,1],
-    measurement_times=times_m,
+    # measurement_times=times_m,
     # cells=True,
     # scale_cX=None#1e8
     # cX_label_y='Biomass Concentration ($10^{8}$ cells/L)'
