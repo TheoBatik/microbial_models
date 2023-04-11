@@ -155,8 +155,9 @@ def regress( params ):
 
     del c
 
+    weight = [1, 1, 10000, 10000, 10000]
     # Compute error
-    I = ( states_m[:, 0] - cP0 )**2 + ( states_m[:, 1] - cP1 )**2 + ( states_m[:, 2] - cP2 )**2
+    I = ( states_m[:, 0] - cP0 )**2 + ( states_m[:, 1] - cP1 )**2 + (( states_m[:, 2] - cP2)*weight )**2
 
     return I
 
@@ -190,7 +191,7 @@ args = (umax, Ks, Yxs, Yps_gluc_1, Yps_oxal_1, Yps_citr_1)
 # Plot inhibition curves
 
 xvline = 24
-times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, times_m[-1], 400)) ) )
+times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 300, 400)) ) )
 Kis = np.array([2, 3, 5, 10])
 
 c_monod = odeint(monod, initial_states, times_p, args=args)
@@ -201,64 +202,70 @@ cP_no_inhib_2 = c_monod[:,3] # Product concentration
 cP_no_inhib_3 = c_monod[:,4] # Product concentration
 
 
-# Plot biomass and sub. no inhibition curves
-plot_inhibition_curves(
-    times_p,
-    initial_states,
-    [],
-    args,
-    haldane_3_products,
-    mic_name,
-    cX_no_inhib=cX_no_inhib,
-    cS_no_inhib=cS_no_inhib,
-    # cP_no_inhib=cP_no_inhib_1,
-    # xvline=xvline,
-    show_fig=show_fig,
-    # cX_measured=Xy,
-    # cS_measured=Sy,
-    # cP_measured=states_m[:,0],
-    # measurement_times=times_m
-)
+mic_name_1 = mic_name + ' (gluconic acid)'
+mic_name_2 = mic_name + ' (oxalic acid)'
+mic_name_3 = mic_name + ' (citric acid)'
+
+# # Plot biomass and sub. no inhibition curves
+# plot_inhibition_curves(
+#     times_p,
+#     initial_states,
+#     [],
+#     args,
+#     haldane_3_products,
+#     mic_name,
+#     cX_no_inhib=cX_no_inhib,
+#     cS_no_inhib=cS_no_inhib,
+#     # cP_no_inhib=cP_no_inhib_1,
+#     # xvline=xvline,
+#     show_fig=show_fig,
+#     # cX_measured=Xy,
+#     # cS_measured=Sy,
+#     # cP_measured=states_m[:,0],
+#     # measurement_times=times_m
+# )
 
 
-# Plot product no inhibition curve 1
-plot_inhibition_curves(
-    times_p,
-    initial_states,
-    [],
-    args,
-    haldane_3_products,
-    mic_name,
-    # cX_no_inhib=cX_no_inhib,
-    # cS_no_inhib=cS_no_inhib,
-    cP_no_inhib=cP_no_inhib_1,
-    xvline=xvline,
-    show_fig=show_fig,
-    # cX_measured=Xy,
-    # cS_measured=Sy,
-    cP_measured=states_m[:,0],
-    measurement_times=times_m
-)
+# # Plot product no inhibition curve 1
+# plot_inhibition_curves(
+#     times_p,
+#     initial_states,
+#     [],
+#     args,
+#     haldane_3_products,
+#     mic_name_1,
+#     # cX_no_inhib=cX_no_inhib,
+#     # cS_no_inhib=cS_no_inhib,
+#     cP_no_inhib=cP_no_inhib_1,
+#     xvline=xvline,
+#     show_fig=show_fig,
+#     # cX_measured=Xy,
+#     # cS_measured=Sy,
+#     cP_measured=states_m[:,0],
+#     measurement_times=times_m,
+#     cP_index=2
+# )
 
 
-# Plot product no inhibition curve 2
-plot_inhibition_curves(
-    times_p,
-    initial_states,
-    [],
-    args,
-    haldane_3_products,
-    mic_name,
-    # cX_no_inhib=cX_no_inhib,
-    # cS_no_inhib=cS_no_inhib,
-    cP_no_inhib=cP_no_inhib_2,
-    # xvline=xvline,
-    show_fig=show_fig,
-    # cX_measured=Xy,
-    # cS_measured=Sy,
-    cP_measured=states_m[:,1],
-    measurement_times=times_m
-)
+# # Plot product no inhibition curve 2
+# plot_inhibition_curves(
+#     times_p,
+#     initial_states,
+#     [],
+#     args,
+#     haldane_3_products,
+#     mic_name_2,
+#     # cX_no_inhib=cX_no_inhib,
+#     # cS_no_inhib=cS_no_inhib,
+#     cP_no_inhib=cP_no_inhib_2,
+#     # xvline=xvline,
+#     show_fig=show_fig,
+#     # cX_measured=Xy,
+#     # cS_measured=Sy,
+#     cP_measured=states_m[:,1],
+#     measurement_times=times_m,
+#     cP_index=3
+# )
 
 
 # Plot product no inhibition curve 3
@@ -268,7 +275,7 @@ plot_inhibition_curves(
     [],
     args,
     haldane_3_products,
-    mic_name,
+    mic_name_3,
     # cX_no_inhib=cX_no_inhib,
     # cS_no_inhib=cS_no_inhib,
     cP_no_inhib=cP_no_inhib_3,
@@ -277,70 +284,74 @@ plot_inhibition_curves(
     # cX_measured=Xy,
     # cS_measured=Sy,
     cP_measured=states_m[:,2],
-    measurement_times=times_m
+    measurement_times=times_m,
+    cP_index=4
 )
 
 
 #################################################################################
 
-# Plot biomass and sub. no inhibition curves
-plot_inhibition_curves(
-    times_p,
-    initial_states,
-    Kis,
-    args,
-    haldane_3_products,
-    mic_name,
-    cX_no_inhib=cX_no_inhib,
-    cS_no_inhib=cS_no_inhib,
-    # cP_no_inhib=cP_no_inhib_1,
-    # xvline=xvline,
-    show_fig=show_fig,
-    # cX_measured=Xy,
-    # cS_measured=Sy,
-    # cP_measured=states_m[:,0],
-    # measurement_times=times_m
-)
+
+# # Plot biomass and sub. no inhibition curves
+# plot_inhibition_curves(
+#     times_p,
+#     initial_states,
+#     Kis,
+#     args,
+#     haldane_3_products,
+#     mic_name_1,
+#     cX_no_inhib=cX_no_inhib,
+#     cS_no_inhib=cS_no_inhib,
+#     # cP_no_inhib=cP_no_inhib_1,
+#     # xvline=xvline,
+#     show_fig=show_fig,
+#     # cX_measured=Xy,
+#     # cS_measured=Sy,
+#     # cP_measured=states_m[:,0],
+#     # measurement_times=times_m
+# )
 
 
-# Plot product no inhibition curve 1
-plot_inhibition_curves(
-    times_p,
-    initial_states,
-    Kis,
-    args,
-    haldane_3_products,
-    mic_name,
-    # cX_no_inhib=cX_no_inhib,
-    # cS_no_inhib=cS_no_inhib,
-    cP_no_inhib=cP_no_inhib_1,
-    xvline=xvline,
-    show_fig=show_fig,
-    # cX_measured=Xy,
-    # cS_measured=Sy,
-    cP_measured=states_m[:,0],
-    measurement_times=times_m
-)
+# # Plot product no inhibition curve 1
+# plot_inhibition_curves(
+#     times_p,
+#     initial_states,
+#     Kis,
+#     args,
+#     haldane_3_products,
+#     mic_name_2,
+#     # cX_no_inhib=cX_no_inhib,
+#     # cS_no_inhib=cS_no_inhib,
+#     cP_no_inhib=cP_no_inhib_1,
+#     # xvline=xvline,
+#     show_fig=show_fig,
+#     # cX_measured=Xy,
+#     # cS_measured=Sy,
+#     cP_measured=states_m[:,0],
+#     measurement_times=times_m,
+#     cP_index=2
+# )
 
 
 # Plot product no inhibition curve 2
-plot_inhibition_curves(
-    times_p,
-    initial_states,
-    Kis,
-    args,
-    haldane_3_products,
-    mic_name,
-    # cX_no_inhib=cX_no_inhib,
-    # cS_no_inhib=cS_no_inhib,
-    cP_no_inhib=cP_no_inhib_2,
-    # xvline=xvline,
-    show_fig=show_fig,
-    # cX_measured=Xy,
-    # cS_measured=Sy,
-    cP_measured=states_m[:,1],
-    measurement_times=times_m
-)
+# plot_inhibition_curves(
+#     times_p,
+#     initial_states,
+#     Kis,
+#     args,
+#     haldane_3_products,
+#     mic_name_3,
+#     # cX_no_inhib=cX_no_inhib,
+#     # cS_no_inhib=cS_no_inhib,
+#     cP_no_inhib=cP_no_inhib_2,
+#     # xvline=xvline,
+#     show_fig=show_fig,
+#     # cX_measured=Xy,
+#     # cS_measured=Sy,
+#     cP_measured=states_m[:,1],
+#     measurement_times=times_m,
+#     cP_index=3
+# )
 
 
 # Plot product no inhibition curve 3
@@ -359,5 +370,6 @@ plot_inhibition_curves(
     # cX_measured=Xy,
     # cS_measured=Sy,
     cP_measured=states_m[:,2],
-    measurement_times=times_m
+    measurement_times=times_m,
+    cP_index=4
 )
