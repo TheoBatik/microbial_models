@@ -228,7 +228,7 @@ Yps = 0.6 # 0.5445
 
 xvline = 24
 times_p = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1000, 600)) ) )
-Kis = np.asarray([2, 3, 5, 10, ])
+Kis = np.asarray([6] ) #[ 2, 3, 5, 10, ])
 args = (umax, Ks, Yps, Yxs)
 
 c_monod = odeint(monod, initial_states, times_p, args=args)

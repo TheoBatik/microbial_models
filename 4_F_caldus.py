@@ -328,11 +328,16 @@ from inhibition import plot_inhibition_curves, haldane_with_products
 from control import show_fig
 
 xvline = 216
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, Dt[-1], 1500)) ) )
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1300, 400)) ) ) # Dt[-1]
 
-Kis = np.asarray( [2, 3, 5, 10] ) / 1000 #np.logspace(-4, -2, 4) #(1, 200, 5) # [1, 1.7, 3]
+MgW = False
+if MgW:
+    Kis = np.asarray( [9] ) # MgW [2, 3, 5, 10] )  #np.logspace(-4, -2, 4) #(1, 200, 5) # [1, 1.7, 3]
+else:
+    Kis = np.asarray( [0.0005, 4.9, 15.9] ) # PCBP
+
+# Evolve system
 args = (Vmax, Km, Yps, Yxs)
-
 g = odeint(Monod, b0, times, args=args)
 cX_no_inhib = g[:,0] # Biomass concentration
 cS_no_inhib = g[:,1] # Substrate concentration
@@ -349,7 +354,7 @@ plot_inhibition_curves(
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
     cP_no_inhib=cP_no_inhib,
-    xvline=xvline,
+    # xvline=xvline,
     show_fig=show_fig,
     cX_measured=DbiomassAve,
     cP_measured=DPAve,

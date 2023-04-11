@@ -99,8 +99,8 @@ if(fit_data == 1):
 # Plot inhibition curves
 
 xvline = 48
-times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 180)) ) )
-Kis = [2, 3, 5, 10]
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, 1800, 600)) ) )
+Kis = [0.08, 2.8, 7.2]
 args = (umax, Ks, Yps, Yxs)
 
 g = odeint(monod, b0, times, args=args)
@@ -119,7 +119,7 @@ plot_inhibition_curves(
     cX_no_inhib=cX_no_inhib,
     cS_no_inhib=cS_no_inhib,
     cP_no_inhib=cP_no_inhib,
-    xvline=xvline,
+    # xvline=xvline,
     show_fig=show_fig,
     cX_measured=Xy,
     # cS_measured=Sy,
@@ -128,6 +128,13 @@ plot_inhibition_curves(
 
 # Plot zero inhibition curves
 Kis = []
+
+times = sorted( np.concatenate( ([xvline], np.linspace(1e-5, tx[-1], 600)) ) )
+g = odeint(monod, b0, times, args=args)
+cX_no_inhib = g[:,0] # Biomass concentration
+cS_no_inhib = g[:,1] # Substrate concentration
+cP_no_inhib = g[:,2] # Product concentration
+
 plot_inhibition_curves(
     times,
     b0,
