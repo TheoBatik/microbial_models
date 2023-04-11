@@ -90,13 +90,13 @@ def haldane_3_products( f, t, *args ):
         return np.zeros(5)
     else:
         # Biomass production rate
-        dxdt = args[0]*( s/(args[1]+s + (s**2)/args[-1]) ) * x
+        dxdt = args[0]*( s/(args[1] + s + (s**2)/args[-1]) ) * x
 
         # Substrate consumption rate
         dsdt = - args[2] * dxdt # - args[3] * x
 
         # Acid production rates
-        dpdt = [ - args[i] * dxdt  for i in [3, 4, 5] ]
+        dpdt = [ - args[i] * dsdt  for i in [3, 4, 5] ]
         
         # Return ODE system
         return [dxdt, dsdt, *dpdt]
@@ -123,7 +123,8 @@ def plot_inhibition_curves(
     # cells=False, # toggle between mass and cell number concentration (cells = order of magnitude of cell number)
     scale_cX=None,
     plot_substrate=True,
-    cX_label_y='Biomass Concentration (g/L)'
+    cX_label_y='Biomass Concentration (g/L)',
+    cP_index=2
     ):
 
     ##################################################################################
@@ -139,6 +140,8 @@ def plot_inhibition_curves(
         # Plot biomass inhibited growth curves (for each item in kis)
         for ki in inhibs:
             
+            print( 'Ki used = ', ki)
+
             g = odeint(inhib_func, b0, eval_times, args=args + (ki,))
             cX = g[:,0] # Biomass concentration
             
@@ -301,7 +304,7 @@ def plot_inhibition_curves(
         for ki in inhibs:
             
             g = odeint(inhib_func, b0, eval_times, args=args + (ki,))
-            cP = g[:,2] # Product concentration
+            cP = g[:,cP_index] # Product concentration
             label='$K_i = $' + str(ki)
 
             plt.plot(
